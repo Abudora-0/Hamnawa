@@ -1,0 +1,154 @@
+:root {
+  font-family: Arial, sans-serif;
+  color-scheme: light;
+  --background: #ffffff;
+  --text: #1b1b1b;
+  --link: #005fcc;
+  --border: #444444;
+  --focus: #e85d04;
+  font-size: 1rem;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #151515;
+  --text: #f5f5f5;
+  --link: #8ecaff;
+  --border: #c7c7c7;
+  --focus: #ffbf69;
+}
+
+:root[data-theme="contrast"] {
+  color-scheme: dark;
+  --background: #000000;
+  --text: #ffff00;
+  --link: #ffffff;
+  --border: #ffff00;
+  --focus: #00ffff;
+}
+
+:root[data-font="small"] {
+  font-size: 0.875rem;
+}
+
+:root[data-font="medium"] {
+  font-size: 1rem;
+}
+
+:root[data-font="large"] {
+  font-size: 1.25rem;
+}
+
+:root[data-font="xlarge"] {
+  font-size: 1.5rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--link);
+}
+
+button,
+input,
+a {
+  font: inherit;
+}
+
+button,
+a,
+input {
+  outline: 3px solid transparent;
+  outline-offset: 3px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline-color: var(--focus);
+}
+
+.skip-link {
+  position: absolute;
+  left: 0.5rem;
+  top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--background);
+  border: 2px solid var(--border);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 5%;
+  border-bottom: 2px solid var(--border);
+}
+
+.brand {
+  font-weight: bold;
+  font-size: 1.25em;
+}
+
+.nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-list a.active {
+  font-weight: bold;
+}
+
+main {
+  max-width: 70rem;
+  min-height: 60vh;
+  margin: 0 auto;
+  padding: 2rem 5%;
+}
+
+fieldset {
+  margin: 1.5rem 0;
+  border: 2px solid var(--border);
+}
+
+fieldset label {
+  display: block;
+  margin: 0.75rem 0;
+}
+
+input {
+  margin-right: 0.5rem;
+}
+
+.live-region {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+:root[data-theme="contrast"] .site-header,
+:root[data-theme="contrast"] fieldset {
+  border-width: 3px;
+}
