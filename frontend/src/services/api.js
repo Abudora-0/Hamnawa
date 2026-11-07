@@ -14,7 +14,9 @@ function getFileType(fileName) {
 async function getResponseError(response) {
   try {
     const data = await response.json();
-    return data.detail || "Something went wrong. Please try again.";
+    return typeof data.detail === "string"
+      ? data.detail
+      : "Something went wrong. Please try again.";
   } catch {
     return "Something went wrong. Please try again.";
   }

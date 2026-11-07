@@ -13,7 +13,7 @@ Errors return JSON in this shape:
 { "detail": "message" }
 ```
 
-Status codes are `400` for an unsupported or empty file, `413` for a file over the limit, and `500` for a processing failure.
+Status codes are `400` for an unsupported or empty file, `404` for a document id that does not exist, `413` for a file over the limit, and `500` for a processing failure.
 
 ## Document shape
 

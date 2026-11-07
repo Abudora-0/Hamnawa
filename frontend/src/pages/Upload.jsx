@@ -17,6 +17,10 @@ function validateFile(file) {
     return "Please choose a PDF or PPTX file.";
   }
 
+  if (file.size === 0) {
+    return "The file is empty. Please choose another file.";
+  }
+
   if (file.size > MAX_FILE_SIZE) {
     return "The file must be 20 MB or smaller.";
   }
@@ -39,10 +43,13 @@ function Upload() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    if (isUploading) {
+      return;
+    }
+
     const validationError = validateFile(file);
     if (validationError) {
       setError(validationError);
-      announce(validationError);
       return;
     }
 
@@ -50,19 +57,22 @@ function Upload() {
     announce("Processing your document, please wait");
 
     try {
-      const document = await uploadDocument(file);
-      setDocument(document);
-      announce(`Document ready. ${document.sections.length} sections found.`);
+      const uploadedDocument = await uploadDocument(file);
+      setDocument(uploadedDocument);
+      announce(`Document ready. ${uploadedDocument.sections.length} sections found.`);
       navigate("/reader");
     } catch (uploadError) {
       setError(uploadError.message);
-      announce(uploadError.message);
     } finally {
       setIsUploading(false);
     }
   }
 
   function loadSample() {
+    if (isUploading) {
+      return;
+    }
+
     setDocument(sampleDocument);
     announce(`Document ready. ${sampleDocument.sections.length} sections found.`);
     navigate("/reader");
@@ -88,11 +98,11 @@ function Upload() {
             {error}
           </p>
         )}
-        <button type="submit" disabled={isUploading}>
+        <button type="submit" aria-disabled={isUploading}>
           {isUploading ? "Processing your document, please wait" : "Upload and process"}
         </button>
       </form>
-      <button type="button" onClick={loadSample} disabled={isUploading}>
+      <button type="button" onClick={loadSample} aria-disabled={isUploading}>
         Try the sample document
       </button>
     </section>
