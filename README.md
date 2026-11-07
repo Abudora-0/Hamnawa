@@ -9,3 +9,5 @@ cd frontend
 npm install
 npm run dev
 ```
+
+Mock API mode is on by default. Set `VITE_USE_MOCK=false` and `VITE_API_URL` to use the real backend.

@@ -65,6 +65,22 @@ a {
 }
 
 button,
+.button-link {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--border);
+  background: var(--background);
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+button,
 a,
 input {
   outline: 3px solid transparent;
@@ -142,6 +158,22 @@ fieldset label {
 
 input {
   margin-right: 0.5rem;
+}
+
+.error-message {
+  color: var(--text);
+  border: 2px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  font-weight: bold;
+}
+
+.error-message::before {
+  content: "Error: ";
+}
+
+.notice {
+  border: 2px dashed var(--border);
+  padding: 0.5rem 0.75rem;
 }
 
 .live-region {
