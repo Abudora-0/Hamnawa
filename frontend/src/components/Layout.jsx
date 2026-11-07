@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import SkipLink from "./SkipLink";
 import { useAnnouncer } from "../context/AnnouncementContext";
@@ -15,11 +15,18 @@ const pageNames = {
 function Layout({ children }) {
   const location = useLocation();
   const mainRef = useRef(null);
+  const hasRendered = useRef(false);
   const { announcement } = useAnnouncer();
 
   useEffect(() => {
     const pageName = pageNames[location.pathname] || "Hamnawa";
     document.title = `${pageName} | Hamnawa`;
+
+    if (!hasRendered.current) {
+      hasRendered.current = true;
+      return;
+    }
+
     mainRef.current?.focus();
   }, [location.pathname]);
 
@@ -27,9 +34,9 @@ function Layout({ children }) {
     <>
       <SkipLink />
       <header className="site-header">
-        <a className="brand" href="/">
+        <Link className="brand" to="/">
           Hamnawa
-        </a>
+        </Link>
         <Navbar />
       </header>
       <main id="main" ref={mainRef} tabIndex={-1}>

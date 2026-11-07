@@ -3,8 +3,20 @@ import { createContext, useContext, useEffect, useState } from "react";
 const SettingsContext = createContext(null);
 
 function getStoredValue(key, fallback) {
-  const value = localStorage.getItem(key);
-  return value || fallback;
+  try {
+    const value = localStorage.getItem(key);
+    return value || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function saveValue(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    return;
+  }
 }
 
 export function SettingsProvider({ children }) {
@@ -15,12 +27,12 @@ export function SettingsProvider({ children }) {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem("hamnawa-theme", theme);
+    saveValue("hamnawa-theme", theme);
   }, [theme]);
 
   useEffect(() => {
     document.documentElement.dataset.font = fontSize;
-    localStorage.setItem("hamnawa-font-size", fontSize);
+    saveValue("hamnawa-font-size", fontSize);
   }, [fontSize]);
 
   return (

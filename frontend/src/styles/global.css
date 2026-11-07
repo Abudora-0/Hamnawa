@@ -125,6 +125,11 @@ main {
   padding: 2rem 5%;
 }
 
+/* Focus is moved here by code on route change. */
+main:focus {
+  outline: none;
+}
+
 fieldset {
   margin: 1.5rem 0;
   border: 2px solid var(--border);
