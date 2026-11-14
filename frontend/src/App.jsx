@@ -5,6 +5,7 @@ import Upload from "./pages/Upload";
 import Reader from "./pages/Reader";
 import SpeakAloud from "./pages/SpeakAloud";
 import Settings from "./pages/Settings";
+import Help from "./pages/Help";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/reader/:id" element={<Reader />} />
         <Route path="/speak" element={<SpeakAloud />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/help" element={<Help />} />
       </Routes>
     </Layout>
   );

@@ -6,6 +6,7 @@ const links = [
   { to: "/reader", label: "Reader" },
   { to: "/speak", label: "Speak Aloud" },
   { to: "/settings", label: "Settings" },
+  { to: "/help", label: "Help" },
 ];
 
 function Navbar() {
