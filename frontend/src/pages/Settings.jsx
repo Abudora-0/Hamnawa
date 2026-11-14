@@ -1,6 +1,11 @@
+import { useState } from "react";
 import { useSettings } from "../context/SettingsContext";
 import { useVoices } from "../hooks/useVoices";
 import { speech } from "../services/speech";
+import { useDocument } from "../context/DocumentContext";
+import { useAnnouncer } from "../context/AnnouncementContext";
+import { deleteDocument } from "../services/api";
+import { eraseAll, getRecent } from "../utils/documentMemory";
 
 const themes = [
   { value: "light", label: "Light" },
@@ -30,6 +35,9 @@ function Settings() {
     continuousReading,
     setContinuousReading,
   } = useSettings();
+  const { setDocument } = useDocument();
+  const { announce } = useAnnouncer();
+  const [confirmErase, setConfirmErase] = useState(false);
   const voices = useVoices();
 
   function testVoice() {
@@ -58,6 +66,41 @@ function Settings() {
             {option.label}
           </label>
         ))}
+      </fieldset>
+      <fieldset>
+        <legend>Saved data</legend>
+        {!confirmErase ? (
+          <button type="button" onClick={() => setConfirmErase(true)}>
+            Erase all saved data
+          </button>
+        ) : (
+          <div>
+            <p>
+              This removes recent documents, saved progress, bookmarks, quick
+              phrases, and speech history. Your display and voice settings stay.
+            </p>
+            <button
+              type="button"
+              onClick={async () => {
+                const recentDocuments = getRecent();
+                await Promise.all(
+                  recentDocuments.map((document) =>
+                    deleteDocument(document.id).catch(() => undefined),
+                  ),
+                );
+                eraseAll();
+                setDocument(null);
+                setConfirmErase(false);
+                announce("All saved data erased");
+              }}
+            >
+              Yes, erase
+            </button>
+            <button type="button" onClick={() => setConfirmErase(false)}>
+              Cancel
+            </button>
+          </div>
+        )}
       </fieldset>
       <fieldset>
         <legend>Speech</legend>

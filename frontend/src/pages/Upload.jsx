@@ -32,6 +32,8 @@ function Upload() {
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [language, setLanguage] = useState("auto");
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const { setDocument } = useDocument();
   const { announce } = useAnnouncer();
   const navigate = useNavigate();
@@ -54,16 +56,41 @@ function Upload() {
     }
 
     setIsUploading(true);
+    setElapsedSeconds(0);
     announce("Processing your document, please wait");
+    const controller = new AbortController();
+    let timedOut = false;
+    const elapsedTimer = setInterval(
+      () => setElapsedSeconds((seconds) => seconds + 1),
+      1000,
+    );
+    const timeout = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, 120000);
+    const noticeTimer = setInterval(() => {
+      announce("Still processing");
+    }, 15000);
 
     try {
-      const uploadedDocument = await uploadDocument(file);
+      const uploadedDocument = await uploadDocument(
+        file,
+        language,
+        controller.signal,
+      );
       setDocument(uploadedDocument);
       announce(`Document ready. ${uploadedDocument.sections.length} sections found.`);
       navigate(`/reader/${uploadedDocument.id}`);
     } catch (uploadError) {
-      setError(uploadError.message);
+      setError(
+        timedOut
+          ? "Processing took too long. Please try a smaller file."
+          : uploadError.message,
+      );
     } finally {
+      clearInterval(elapsedTimer);
+      clearTimeout(timeout);
+      clearInterval(noticeTimer);
       setIsUploading(false);
     }
   }
@@ -82,6 +109,10 @@ function Upload() {
     <section>
       <h1>Upload</h1>
       <p>Upload a PDF or slide deck to begin.</p>
+      <p className="notice">
+        Your file is sent to our server to be processed. It is deleted after
+        24 hours or when you erase your data.
+      </p>
       <form onSubmit={handleSubmit} noValidate>
         <label htmlFor="document-file">Choose a document</label>
         <p id="file-hint">PDF or PowerPoint, up to 20 MB</p>
@@ -93,6 +124,16 @@ function Upload() {
           aria-invalid={Boolean(error)}
           onChange={handleFileChange}
         />
+        <label htmlFor="document-language">Document language</label>
+        <select
+          id="document-language"
+          value={language}
+          onChange={(event) => setLanguage(event.target.value)}
+        >
+          <option value="auto">Auto</option>
+          <option value="en">English</option>
+          <option value="ur">Urdu</option>
+        </select>
         {error && (
           <p className="error-message" role="alert">
             {error}
@@ -101,6 +142,9 @@ function Upload() {
         <button type="submit" aria-disabled={isUploading}>
           {isUploading ? "Processing your document, please wait" : "Upload and process"}
         </button>
+        {isUploading ? (
+          <p role="status">Processing: {elapsedSeconds} seconds</p>
+        ) : null}
       </form>
       <button type="button" onClick={loadSample} aria-disabled={isUploading}>
         Try the sample document
