@@ -1,0 +1,20 @@
+# Optional: run MySQL for local development with "docker compose up -d".
+# These passwords are for local development only.
+services:
+  db:
+    image: mysql:8.0
+    container_name: hamnawa-db
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: hamnawa_root
+      MYSQL_DATABASE: hamnawa
+      MYSQL_USER: hamnawa
+      MYSQL_PASSWORD: hamnawa_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+      - hamnawa_data:/var/lib/mysql
+
+volumes:
+  hamnawa_data:
