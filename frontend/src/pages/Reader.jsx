@@ -4,9 +4,10 @@ import DocumentView from "../components/DocumentView";
 import ReaderControls from "../components/ReaderControls";
 import { useDocument } from "../context/DocumentContext";
 import { useSettings } from "../context/SettingsContext";
-import { useAnnouncer } from "../context/AnnouncementContext";
 import { useReadingPlayer } from "../hooks/useReadingPlayer";
+import { useReaderActions } from "../hooks/useReaderActions";
 import { useReaderShortcuts } from "../hooks/useReaderShortcuts";
+import ReaderTools from "../components/ReaderTools";
 import { getDocument } from "../services/api";
 import { speech } from "../services/speech";
 import { buildQueue } from "../utils/readingQueue";
@@ -14,8 +15,7 @@ import { buildQueue } from "../utils/readingQueue";
 function Reader() {
   const { id } = useParams();
   const { document: contextDocument, setDocument } = useDocument();
-  const { cuesEnabled, speechRate, setSpeechRate } = useSettings();
-  const { announce } = useAnnouncer();
+  const { cuesEnabled, speechRate } = useSettings();
   const [loadingId, setLoadingId] = useState("");
   const [error, setError] = useState("");
   const requestedId = useRef("");
@@ -53,7 +53,8 @@ function Reader() {
     [currentDocument, cuesEnabled],
   );
   const player = useReadingPlayer(items);
-  useReaderShortcuts(player, changeSpeed);
+  const actions = useReaderActions(player, items, currentDocument);
+  useReaderShortcuts(actions);
 
   useEffect(() => {
     if (player.index === 0 && !player.isPlaying) {
@@ -65,12 +66,6 @@ function Reader() {
         ?.scrollIntoView({ block: "center" });
     }
   }, [items, player.index, player.isPlaying]);
-
-  function changeSpeed(amount) {
-    const nextRate = Math.min(3, Math.max(0.5, speechRate + amount));
-    setSpeechRate(nextRate);
-    announce(`Speed ${nextRate} times normal`);
-  }
 
   if (error) {
     return <p role="alert">{error}</p>;
@@ -98,7 +93,10 @@ function Reader() {
         <ReaderControls
           {...player}
           speed={speechRate}
-          onSpeedChange={changeSpeed}
+          actions={actions}
+          repeat={actions.repeat}
+          goToStart={actions.goToStart}
+          goToEnd={actions.goToEnd}
           total={items.length}
         />
       ) : (
@@ -106,6 +104,19 @@ function Reader() {
           Your browser does not support speech. Try Chrome or Edge.
         </p>
       )}
+      {isSpeechSupported ? (
+        <ReaderTools
+          document={currentDocument}
+          currentSectionId={items[player.index]?.sectionId}
+          onSelectSection={actions.goToSection}
+          goToPage={actions.goToPage}
+          search={actions.search}
+          nextMatch={actions.nextMatch}
+          previousMatch={actions.previousMatch}
+          matchCount={actions.matchCount}
+          currentMatch={actions.currentMatch}
+        />
+      ) : null}
       <DocumentView
         document={currentDocument}
         currentTargetId={items[player.index]?.targetId}
