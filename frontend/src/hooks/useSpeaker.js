@@ -51,7 +51,7 @@ export function useSpeaker() {
       );
     }
 
-    speakSentence(0);
+    setTimeout(() => speakSentence(0), 50);
   }
 
   useEffect(
