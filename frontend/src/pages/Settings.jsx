@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSettings } from "../context/SettingsContext";
 import { useVoices } from "../hooks/useVoices";
 import { speech } from "../services/speech";
@@ -38,7 +38,19 @@ function Settings() {
   const { setDocument } = useDocument();
   const { announce } = useAnnouncer();
   const [confirmErase, setConfirmErase] = useState(false);
+  const eraseButtonRef = useRef(null);
+  const explanationRef = useRef(null);
+  const wasConfirmingRef = useRef(false);
   const voices = useVoices();
+
+  useEffect(() => {
+    if (confirmErase) {
+      explanationRef.current?.focus();
+    } else if (wasConfirmingRef.current) {
+      eraseButtonRef.current?.focus();
+    }
+    wasConfirmingRef.current = confirmErase;
+  }, [confirmErase]);
 
   function testVoice() {
     speech.cancel();
@@ -47,6 +59,19 @@ function Settings() {
       { rate: speechRate, voiceName },
       () => {},
     );
+  }
+
+  async function eraseSavedData() {
+    const recentDocuments = getRecent();
+    await Promise.all(
+      recentDocuments.map((recentDocument) =>
+        deleteDocument(recentDocument.id).catch(() => undefined),
+      ),
+    );
+    eraseAll();
+    setDocument(null);
+    setConfirmErase(false);
+    announce("All saved data erased");
   }
 
   return (
@@ -70,30 +95,20 @@ function Settings() {
       <fieldset>
         <legend>Saved data</legend>
         {!confirmErase ? (
-          <button type="button" onClick={() => setConfirmErase(true)}>
+          <button
+            type="button"
+            ref={eraseButtonRef}
+            onClick={() => setConfirmErase(true)}
+          >
             Erase all saved data
           </button>
         ) : (
           <div>
-            <p>
+            <p ref={explanationRef} tabIndex={-1}>
               This removes recent documents, saved progress, bookmarks, quick
               phrases, and speech history. Your display and voice settings stay.
             </p>
-            <button
-              type="button"
-              onClick={async () => {
-                const recentDocuments = getRecent();
-                await Promise.all(
-                  recentDocuments.map((document) =>
-                    deleteDocument(document.id).catch(() => undefined),
-                  ),
-                );
-                eraseAll();
-                setDocument(null);
-                setConfirmErase(false);
-                announce("All saved data erased");
-              }}
-            >
+            <button type="button" onClick={eraseSavedData}>
               Yes, erase
             </button>
             <button type="button" onClick={() => setConfirmErase(false)}>

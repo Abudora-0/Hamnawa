@@ -126,7 +126,7 @@ function SpeakAloud() {
           </button>
         </div>
       </form>
-      <p className="speak-status" role="status" aria-live="polite">
+      <p className="speak-status">
         {isSpeaking ? "Speaking" : ""}
       </p>
 

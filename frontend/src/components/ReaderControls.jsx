@@ -2,15 +2,6 @@ import { shortcuts } from "../utils/shortcuts";
 
 function ReaderControls({
   isPlaying,
-  play,
-  pause,
-  next,
-  previous,
-  nextSection,
-  previousSection,
-  repeat,
-  goToStart,
-  goToEnd,
   speed,
   index,
   total,
@@ -19,19 +10,19 @@ function ReaderControls({
   return (
     <div className="reader-controls">
       <div role="group" aria-label="Reading controls">
-        <button type="button" onClick={previousSection}>
+        <button type="button" onClick={actions.previousSection}>
           Previous section
         </button>
-        <button type="button" onClick={previous}>
+        <button type="button" onClick={actions.previous}>
           Previous sentence
         </button>
-        <button type="button" onClick={isPlaying ? pause : play}>
+        <button type="button" onClick={actions.toggle}>
           {isPlaying ? "Pause" : "Play"}
         </button>
-        <button type="button" onClick={next}>
+        <button type="button" onClick={actions.next}>
           Next sentence
         </button>
-        <button type="button" onClick={nextSection}>
+        <button type="button" onClick={actions.nextSection}>
           Next section
         </button>
         <button type="button" onClick={actions.slower}>
@@ -40,13 +31,13 @@ function ReaderControls({
         <button type="button" onClick={actions.faster}>
           Faster
         </button>
-        <button type="button" onClick={repeat}>
+        <button type="button" onClick={actions.repeat}>
           Repeat sentence
         </button>
-        <button type="button" onClick={goToStart}>
+        <button type="button" onClick={actions.goToStart}>
           Start
         </button>
-        <button type="button" onClick={goToEnd}>
+        <button type="button" onClick={actions.goToEnd}>
           End
         </button>
       </div>
