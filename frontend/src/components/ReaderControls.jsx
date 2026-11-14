@@ -1,4 +1,4 @@
-import { shortcuts } from "../utils/shortcuts";
+import { getShortcutLabel, getShortcuts } from "../utils/shortcuts";
 
 function ReaderControls({
   isPlaying,
@@ -6,6 +6,7 @@ function ReaderControls({
   index,
   total,
   actions,
+  screenReaderMode,
 }) {
   return (
     <div className="reader-controls">
@@ -46,9 +47,9 @@ function ReaderControls({
       <div>
         <strong>Keyboard shortcuts</strong>
         <ul>
-          {shortcuts.map((shortcut) => (
+          {getShortcuts(screenReaderMode).map((shortcut) => (
             <li key={`${shortcut.key}-${shortcut.action}`}>
-              {shortcut.key}: {shortcut.label}
+              {getShortcutLabel(shortcut, screenReaderMode)}: {shortcut.label}
             </li>
           ))}
         </ul>

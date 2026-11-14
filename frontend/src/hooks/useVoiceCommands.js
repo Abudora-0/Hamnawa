@@ -67,7 +67,8 @@ export function useVoiceCommands(actions, isPlaying) {
         const commandAction = actionsRef.current[command.action];
         if (command.action === "help") {
           announce(HELP_MESSAGE);
-        } else if (commandAction) {
+        }
+        if (commandAction) {
           commandAction(command.value);
         }
       }
