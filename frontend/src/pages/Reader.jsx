@@ -152,6 +152,7 @@ function Reader() {
   if (error) {
     return (
       <section>
+        <h1>Reader</h1>
         <p role="alert">{error}</p>
         <Link to="/upload">Upload again</Link>
       </section>
@@ -178,12 +179,10 @@ function Reader() {
       <h1>{currentDocument.title}</h1>
       {isSpeechSupported ? (
         <ReaderControls
-          {...player}
+          isPlaying={player.isPlaying}
+          index={player.index}
           speed={speechRate}
           actions={actions}
-          repeat={actions.repeat}
-          goToStart={actions.goToStart}
-          goToEnd={actions.goToEnd}
           total={items.length}
         />
       ) : (
@@ -204,7 +203,9 @@ function Reader() {
           currentMatch={actions.currentMatch}
           bookmarks={bookmarks}
           onAddBookmark={actions.addBookmark}
-          onGoToBookmark={player.goTo}
+          onGoToBookmark={(bookmark) =>
+            actions.goToTarget(bookmark.targetId, bookmark.index)
+          }
           onRemoveBookmark={removeCurrentBookmark}
         />
       ) : null}

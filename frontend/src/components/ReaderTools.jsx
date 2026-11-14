@@ -86,9 +86,7 @@ function ReaderTools({
           <button type="button" onClick={nextMatch}>
             Next match
           </button>
-          <p role="status">
-            {matchCount ? `Match ${currentMatch} of ${matchCount}` : ""}
-          </p>
+          <p>{matchCount ? `Match ${currentMatch} of ${matchCount}` : ""}</p>
         </form>
       </details>
       <details open>
@@ -102,7 +100,7 @@ function ReaderTools({
               <li key={bookmark.id}>
                 <button
                   type="button"
-                  onClick={() => onGoToBookmark(bookmark.index)}
+                  onClick={() => onGoToBookmark(bookmark)}
                 >
                   Go to {bookmark.label}
                 </button>

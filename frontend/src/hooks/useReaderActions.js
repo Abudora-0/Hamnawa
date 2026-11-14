@@ -39,9 +39,17 @@ export function useReaderActions(player, items, document) {
         return;
       }
       player.goTo(targetIndex);
-      announce(`Moved to ${locationLabel} ${pageNumber}`);
+      announce(`Moved to ${locationLabel} ${items[targetIndex].location}`);
     },
     [announce, document, items, player],
+  );
+
+  const goToTarget = useCallback(
+    (targetId, fallbackIndex) => {
+      const targetIndex = items.findIndex((item) => item.targetId === targetId);
+      player.goTo(targetIndex === -1 ? fallbackIndex : targetIndex);
+    },
+    [items, player],
   );
 
   const search = useCallback(
@@ -118,6 +126,7 @@ export function useReaderActions(player, items, document) {
       }
     },
     goToPage,
+    goToTarget,
     search,
     nextMatch: () => moveMatch(1),
     previousMatch: () => moveMatch(-1),
