@@ -2,7 +2,7 @@ export function isUrdu(text) {
   return /[\u0600-\u06FF]/.test(text);
 }
 
-function splitSentences(text) {
+export function splitSentences(text) {
   return text
     .trim()
     .split(/(?<=[.!?۔])\s+/)
