@@ -19,7 +19,8 @@ function Layout({ children }) {
   const { announcement } = useAnnouncer();
 
   useEffect(() => {
-    const pageName = pageNames[location.pathname] || "Hamnawa";
+    const firstPath = `/${location.pathname.split("/")[1]}`;
+    const pageName = pageNames[firstPath] || "Hamnawa";
     document.title = `${pageName} | Hamnawa`;
 
     if (!hasRendered.current) {

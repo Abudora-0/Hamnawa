@@ -60,7 +60,7 @@ function Upload() {
       const uploadedDocument = await uploadDocument(file);
       setDocument(uploadedDocument);
       announce(`Document ready. ${uploadedDocument.sections.length} sections found.`);
-      navigate("/reader");
+      navigate(`/reader/${uploadedDocument.id}`);
     } catch (uploadError) {
       setError(uploadError.message);
     } finally {
@@ -75,7 +75,7 @@ function Upload() {
 
     setDocument(sampleDocument);
     announce(`Document ready. ${sampleDocument.sections.length} sections found.`);
-    navigate("/reader");
+    navigate(`/reader/${sampleDocument.id}`);
   }
 
   return (

@@ -1,56 +1,81 @@
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import DocumentView from "../components/DocumentView";
+import ReaderControls from "../components/ReaderControls";
 import { useDocument } from "../context/DocumentContext";
-
-function Section({ section }) {
-  const headingLevel = Math.min(section.level + 1, 6);
-  const Heading = `h${headingLevel}`;
-  const content = [];
-
-  for (let index = 0; index < section.blocks.length; index += 1) {
-    const block = section.blocks[index];
-    if (block.kind === "list_item") {
-      const items = [];
-      while (
-        index < section.blocks.length &&
-        section.blocks[index].kind === "list_item"
-      ) {
-        items.push(section.blocks[index]);
-        index += 1;
-      }
-      index -= 1;
-      content.push(
-        <ul key={`list-${items[0].id}`}>
-          {items.map((item) => (
-            <li key={item.id}>{item.text}</li>
-          ))}
-        </ul>,
-      );
-    } else if (block.kind === "notice") {
-      content.push(
-        <div className="notice" role="note" key={block.id}>
-          <p>
-            <strong>Notice:</strong> {block.text}
-          </p>
-        </div>,
-      );
-    } else {
-      content.push(<p key={block.id}>{block.text}</p>);
-    }
-  }
-
-  return (
-    <section>
-      <Heading>{section.title}</Heading>
-      {content}
-      {section.children.map((child) => (
-        <Section section={child} key={child.id} />
-      ))}
-    </section>
-  );
-}
+import { useSettings } from "../context/SettingsContext";
+import { useAnnouncer } from "../context/AnnouncementContext";
+import { useReadingPlayer } from "../hooks/useReadingPlayer";
+import { useReaderShortcuts } from "../hooks/useReaderShortcuts";
+import { getDocument } from "../services/api";
+import { speech } from "../services/speech";
+import { buildQueue } from "../utils/readingQueue";
 
 function Reader() {
-  const { document: currentDocument } = useDocument();
+  const { id } = useParams();
+  const { document: contextDocument, setDocument } = useDocument();
+  const { cuesEnabled, speechRate, setSpeechRate } = useSettings();
+  const { announce } = useAnnouncer();
+  const [loadingId, setLoadingId] = useState("");
+  const [error, setError] = useState("");
+  const requestedId = useRef("");
+
+  const currentDocument =
+    id && contextDocument?.id !== id ? null : contextDocument;
+
+  useEffect(() => {
+    if (!id) {
+      requestedId.current = "";
+      setLoadingId("");
+      setError("");
+      return;
+    }
+    if (contextDocument?.id === id || requestedId.current === id) {
+      return;
+    }
+
+    requestedId.current = id;
+    setLoadingId(id);
+    setError("");
+    getDocument(id)
+      .then((loadedDocument) => {
+        setDocument(loadedDocument);
+        setLoadingId("");
+      })
+      .catch((loadError) => {
+        setError(loadError.message);
+        setLoadingId("");
+      });
+  }, [contextDocument, id, setDocument]);
+
+  const items = useMemo(
+    () => (currentDocument ? buildQueue(currentDocument, cuesEnabled) : []),
+    [currentDocument, cuesEnabled],
+  );
+  const player = useReadingPlayer(items);
+  useReaderShortcuts(player);
+
+  useEffect(() => {
+    if (items[player.index]) {
+      document
+        .getElementById(items[player.index].targetId)
+        ?.scrollIntoView({ block: "center" });
+    }
+  }, [items, player.index]);
+
+  function changeSpeed(amount) {
+    const nextRate = Math.min(3, Math.max(0.5, speechRate + amount));
+    setSpeechRate(nextRate);
+    announce(`Speed ${nextRate} times`);
+  }
+
+  if (error) {
+    return <p role="alert">{error}</p>;
+  }
+
+  if (loadingId === id) {
+    return <p role="status">Loading document</p>;
+  }
 
   if (!currentDocument) {
     return (
@@ -62,12 +87,26 @@ function Reader() {
     );
   }
 
+  const isSpeechSupported = speech.isSupported();
   return (
     <section>
       <h1>{currentDocument.title}</h1>
-      {currentDocument.sections.map((section) => (
-        <Section section={section} key={section.id} />
-      ))}
+      {isSpeechSupported ? (
+        <ReaderControls
+          {...player}
+          speed={speechRate}
+          onSpeedChange={changeSpeed}
+          total={items.length}
+        />
+      ) : (
+        <p role="status">
+          Your browser does not support speech. Try Chrome or Edge.
+        </p>
+      )}
+      <DocumentView
+        document={currentDocument}
+        currentTargetId={items[player.index]?.targetId}
+      />
     </section>
   );
 }
