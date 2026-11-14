@@ -35,6 +35,10 @@ function ReaderTools({
   previousMatch,
   matchCount,
   currentMatch,
+  bookmarks,
+  onAddBookmark,
+  onGoToBookmark,
+  onRemoveBookmark,
 }) {
   const locationLabel = document.file_type === "pptx" ? "slide" : "page";
 
@@ -86,6 +90,35 @@ function ReaderTools({
             {matchCount ? `Match ${currentMatch} of ${matchCount}` : ""}
           </p>
         </form>
+      </details>
+      <details open>
+        <summary>Bookmarks</summary>
+        <button type="button" onClick={onAddBookmark}>
+          Add bookmark
+        </button>
+        {bookmarks.length ? (
+          <ul>
+            {bookmarks.map((bookmark) => (
+              <li key={bookmark.id}>
+                <button
+                  type="button"
+                  onClick={() => onGoToBookmark(bookmark.index)}
+                >
+                  Go to {bookmark.label}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onRemoveBookmark(bookmark.id)}
+                  aria-label={`Remove ${bookmark.label}`}
+                >
+                  Remove {bookmark.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No bookmarks yet.</p>
+        )}
       </details>
     </div>
   );
