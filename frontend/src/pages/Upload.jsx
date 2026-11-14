@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAnnouncer } from "../context/AnnouncementContext";
 import { useDocument } from "../context/DocumentContext";
@@ -34,9 +34,18 @@ function Upload() {
   const [isUploading, setIsUploading] = useState(false);
   const [language, setLanguage] = useState("auto");
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const controllerRef = useRef(null);
+  const isMountedRef = useRef(true);
   const { setDocument } = useDocument();
   const { announce } = useAnnouncer();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+      controllerRef.current?.abort();
+    };
+  }, []);
 
   function handleFileChange(event) {
     setFile(event.target.files[0] || null);
@@ -59,6 +68,7 @@ function Upload() {
     setElapsedSeconds(0);
     announce("Processing your document, please wait");
     const controller = new AbortController();
+    controllerRef.current = controller;
     let timedOut = false;
     const elapsedTimer = setInterval(
       () => setElapsedSeconds((seconds) => seconds + 1),
@@ -82,6 +92,9 @@ function Upload() {
       announce(`Document ready. ${uploadedDocument.sections.length} sections found.`);
       navigate(`/reader/${uploadedDocument.id}`);
     } catch (uploadError) {
+      if (uploadError.name === "AbortError" && !timedOut) {
+        return;
+      }
       setError(
         timedOut
           ? "Processing took too long. Please try a smaller file."
@@ -91,7 +104,10 @@ function Upload() {
       clearInterval(elapsedTimer);
       clearTimeout(timeout);
       clearInterval(noticeTimer);
-      setIsUploading(false);
+      controllerRef.current = null;
+      if (isMountedRef.current) {
+        setIsUploading(false);
+      }
     }
   }
 
@@ -143,7 +159,7 @@ function Upload() {
           {isUploading ? "Processing your document, please wait" : "Upload and process"}
         </button>
         {isUploading ? (
-          <p role="status">Processing: {elapsedSeconds} seconds</p>
+          <p>Processing: {elapsedSeconds} seconds</p>
         ) : null}
       </form>
       <button type="button" onClick={loadSample} aria-disabled={isUploading}>
