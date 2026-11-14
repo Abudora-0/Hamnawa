@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import DocumentView from "../components/DocumentView";
 import ReaderControls from "../components/ReaderControls";
 import { useDocument } from "../context/DocumentContext";
@@ -25,8 +25,9 @@ import { buildQueue } from "../utils/readingQueue";
 function Reader() {
   const { id } = useParams();
   const { document: contextDocument, setDocument } = useDocument();
-  const { cuesEnabled, speechRate } = useSettings();
+  const { cuesEnabled, speechRate, screenReaderMode } = useSettings();
   const { announce } = useAnnouncer();
+  const navigate = useNavigate();
   const [loadingId, setLoadingId] = useState("");
   const [error, setError] = useState("");
   const [bookmarks, setBookmarks] = useState([]);
@@ -136,7 +137,11 @@ function Reader() {
     );
   }
 
-  const voiceActions = { ...readerActions, addBookmark: addCurrentBookmark };
+  const voiceActions = {
+    ...readerActions,
+    addBookmark: addCurrentBookmark,
+    help: () => navigate("/help"),
+  };
   const voiceCommands = useVoiceCommands(voiceActions, player.isPlaying);
   const actions = {
     ...voiceActions,
@@ -150,7 +155,7 @@ function Reader() {
       }
     },
   };
-  useReaderShortcuts(actions);
+  useReaderShortcuts(actions, screenReaderMode);
 
   useEffect(() => {
     if (player.index === 0 && !player.isPlaying) {
@@ -216,6 +221,7 @@ function Reader() {
           index={player.index}
           speed={speechRate}
           actions={actions}
+          screenReaderMode={screenReaderMode}
           total={items.length}
         />
       ) : (
