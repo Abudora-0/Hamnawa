@@ -16,6 +16,12 @@ export const sampleDocument = {
           text: "Software engineering builds useful software through an organized process.",
           location: 1,
         },
+        {
+          id: 7,
+          kind: "paragraph",
+          text: "سافٹ ویئر انجینئرنگ منظم طریقے سے سافٹ ویئر بناتی ہے۔",
+          location: 1,
+        },
       ],
       children: [
         {
