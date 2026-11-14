@@ -17,6 +17,8 @@ Status codes are `400` for an unsupported or empty file, `404` for a document id
 
 ## Document shape
 
+Document ids are always strings, such as "doc-1" or "42".
+
 ```json
 {
   "id": "doc-1",

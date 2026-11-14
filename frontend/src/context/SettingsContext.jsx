@@ -20,7 +20,16 @@ function saveValue(key, value) {
 }
 
 function getStoredNumber(key, fallback, min, max) {
-  const parsed = Number(getStoredValue(key, ""));
+  let storedValue;
+  try {
+    storedValue = localStorage.getItem(key);
+  } catch {
+    return fallback;
+  }
+  if (!storedValue) {
+    return fallback;
+  }
+  const parsed = Number(storedValue);
   return Number.isFinite(parsed)
     ? Math.min(max, Math.max(min, parsed))
     : fallback;

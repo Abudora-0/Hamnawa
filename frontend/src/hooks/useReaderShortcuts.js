@@ -1,11 +1,6 @@
 import { useEffect } from "react";
-import { useAnnouncer } from "../context/AnnouncementContext";
-import { useSettings } from "../context/SettingsContext";
 
-export function useReaderShortcuts(player) {
-  const { speechRate, setSpeechRate } = useSettings();
-  const { announce } = useAnnouncer();
-
+export function useReaderShortcuts(player, changeSpeed) {
   useEffect(() => {
     function handleKeyDown(event) {
       if (
@@ -39,19 +34,16 @@ export function useReaderShortcuts(player) {
       } else if (event.key === "+") {
         event.preventDefault();
         changeSpeed(0.25);
+      } else if (event.key === "=") {
+        event.preventDefault();
+        changeSpeed(0.25);
       } else if (event.key === "-") {
         event.preventDefault();
         changeSpeed(-0.25);
       }
     }
 
-    function changeSpeed(amount) {
-      const nextRate = Math.min(3, Math.max(0.5, speechRate + amount));
-      setSpeechRate(nextRate);
-      announce(`Speed ${nextRate} times`);
-    }
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [announce, player, setSpeechRate, speechRate]);
+  }, [changeSpeed, player]);
 }
