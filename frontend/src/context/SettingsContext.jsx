@@ -57,6 +57,9 @@ export function SettingsProvider({ children }) {
   const [continuousReading, setContinuousReading] = useState(() =>
     getStoredBoolean("hamnawa-continuous-reading", true),
   );
+  const [screenReaderMode, setScreenReaderMode] = useState(() =>
+    getStoredBoolean("hamnawa-screen-reader-mode", false),
+  );
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -75,6 +78,10 @@ export function SettingsProvider({ children }) {
     () => saveValue("hamnawa-continuous-reading", continuousReading),
     [continuousReading],
   );
+  useEffect(
+    () => saveValue("hamnawa-screen-reader-mode", screenReaderMode),
+    [screenReaderMode],
+  );
 
   return (
     <SettingsContext.Provider
@@ -91,6 +98,8 @@ export function SettingsProvider({ children }) {
         setCuesEnabled,
         continuousReading,
         setContinuousReading,
+        screenReaderMode,
+        setScreenReaderMode,
       }}
     >
       {children}

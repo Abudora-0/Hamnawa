@@ -34,6 +34,8 @@ function Settings() {
     setCuesEnabled,
     continuousReading,
     setContinuousReading,
+    screenReaderMode,
+    setScreenReaderMode,
   } = useSettings();
   const { setDocument } = useDocument();
   const { announce } = useAnnouncer();
@@ -185,6 +187,20 @@ function Settings() {
             {option.label}
           </label>
         ))}
+      </fieldset>
+      <fieldset>
+        <legend>Keyboard</legend>
+        <label>
+          <input
+            type="checkbox"
+            checked={screenReaderMode}
+            onChange={(event) => setScreenReaderMode(event.target.checked)}
+          />
+          Screen reader mode (shortcuts use Alt+Shift)
+        </label>
+        <p>
+          This avoids clashes with screen reader keys.
+        </p>
       </fieldset>
     </section>
   );
