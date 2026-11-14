@@ -6,6 +6,8 @@
   --link: #005fcc;
   --border: #444444;
   --focus: #e85d04;
+  --highlight-bg: #fff1a8;
+  --highlight-text: #1b1b1b;
   font-size: 1rem;
 }
 
@@ -16,6 +18,8 @@
   --link: #8ecaff;
   --border: #c7c7c7;
   --focus: #ffbf69;
+  --highlight-bg: #5a4a00;
+  --highlight-text: #ffffff;
 }
 
 :root[data-theme="contrast"] {
@@ -25,6 +29,8 @@
   --link: #ffffff;
   --border: #ffff00;
   --focus: #00ffff;
+  --highlight-bg: #ffff00;
+  --highlight-text: #000000;
 }
 
 :root[data-font="small"] {
@@ -155,6 +161,24 @@ fieldset {
 fieldset label {
   display: block;
   margin: 0.75rem 0;
+}
+
+.reader-controls {
+  margin: 1.5rem 0;
+}
+
+.reader-controls [role="group"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.current {
+  background: var(--highlight-bg);
+  color: var(--highlight-text);
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  padding: 0.15rem;
 }
 
 input {

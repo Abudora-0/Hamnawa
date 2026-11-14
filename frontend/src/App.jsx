@@ -13,6 +13,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/upload" element={<Upload />} />
         <Route path="/reader" element={<Reader />} />
+        <Route path="/reader/:id" element={<Reader />} />
         <Route path="/speak" element={<SpeakAloud />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
