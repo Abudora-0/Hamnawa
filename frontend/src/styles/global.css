@@ -171,6 +171,33 @@ fieldset label {
   margin: 1.5rem 0;
 }
 
+.reader-tools details {
+  margin: 1rem 0;
+  border: 2px solid var(--border);
+  padding: 0.5rem 0.75rem;
+}
+
+.reader-tools summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.document-outline {
+  padding-left: 1.25rem;
+}
+
+.document-outline ul {
+  padding-left: 1.25rem;
+}
+
+.document-outline button {
+  margin: 0.2rem 0;
+}
+
+.reader-tools form {
+  margin: 1rem 0;
+}
+
 .reader-controls [role="group"] {
   display: flex;
   flex-wrap: wrap;
