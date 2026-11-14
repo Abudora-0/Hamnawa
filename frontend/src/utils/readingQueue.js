@@ -44,8 +44,9 @@ export function buildQueue(document, cuesEnabled) {
           index += 1;
         }
         if (cuesEnabled) {
+          const itemLabel = listItems.length === 1 ? "item" : "items";
           addItem(
-            `List of ${listItems.length} items.`,
+            `List of ${listItems.length} ${itemLabel}.`,
             `block-${listItems[0].id}`,
             sectionId,
           );
