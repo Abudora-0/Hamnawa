@@ -21,7 +21,7 @@ function Reader() {
   const requestedId = useRef("");
 
   const currentDocument =
-    id && contextDocument?.id !== id ? null : contextDocument;
+    id && String(contextDocument?.id) !== id ? null : contextDocument;
 
   useEffect(() => {
     if (!id) {
@@ -30,7 +30,7 @@ function Reader() {
       setError("");
       return;
     }
-    if (contextDocument?.id === id || requestedId.current === id) {
+    if (String(contextDocument?.id) === id || requestedId.current === id) {
       return;
     }
 
@@ -53,20 +53,23 @@ function Reader() {
     [currentDocument, cuesEnabled],
   );
   const player = useReadingPlayer(items);
-  useReaderShortcuts(player);
+  useReaderShortcuts(player, changeSpeed);
 
   useEffect(() => {
+    if (player.index === 0 && !player.isPlaying) {
+      return;
+    }
     if (items[player.index]) {
       document
         .getElementById(items[player.index].targetId)
         ?.scrollIntoView({ block: "center" });
     }
-  }, [items, player.index]);
+  }, [items, player.index, player.isPlaying]);
 
   function changeSpeed(amount) {
     const nextRate = Math.min(3, Math.max(0.5, speechRate + amount));
     setSpeechRate(nextRate);
-    announce(`Speed ${nextRate} times`);
+    announce(`Speed ${nextRate} times normal`);
   }
 
   if (error) {

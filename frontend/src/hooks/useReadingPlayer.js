@@ -107,6 +107,5 @@ export function useReadingPlayer(items) {
     previous,
     nextSection,
     previousSection,
-    atEnd: items.length > 0 && index >= items.length - 1,
   };
 }
