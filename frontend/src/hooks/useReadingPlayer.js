@@ -8,6 +8,7 @@ export function useReadingPlayer(items) {
   const { announce } = useAnnouncer();
   const [index, setIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [repeatVersion, setRepeatVersion] = useState(0);
 
   useEffect(() => {
     setIndex(0);
@@ -53,7 +54,16 @@ export function useReadingPlayer(items) {
       clearTimeout(timer);
       speech.cancel();
     };
-  }, [isPlaying, index, items, speechRate, voiceName, continuousReading, announce]);
+  }, [
+    isPlaying,
+    index,
+    items,
+    speechRate,
+    voiceName,
+    continuousReading,
+    announce,
+    repeatVersion,
+  ]);
 
   function play() {
     if (items.length && index >= items.length - 1) {
@@ -98,6 +108,18 @@ export function useReadingPlayer(items) {
     }
   }
 
+  function goTo(nextIndex) {
+    if (!items.length) {
+      return;
+    }
+    setIndex(Math.min(Math.max(nextIndex, 0), items.length - 1));
+  }
+
+  function repeat() {
+    setRepeatVersion((version) => version + 1);
+    setIsPlaying(true);
+  }
+
   return {
     index,
     isPlaying,
@@ -107,5 +129,7 @@ export function useReadingPlayer(items) {
     previous,
     nextSection,
     previousSection,
+    goTo,
+    repeat,
   };
 }
