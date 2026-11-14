@@ -35,12 +35,26 @@ async function request(url, options) {
     throw new Error(await getResponseError(response));
   }
 
+  if (response.status === 204) {
+    return undefined;
+  }
+
   return response.json();
 }
 
-export async function uploadDocument(file) {
+export async function uploadDocument(file, language = "auto", signal) {
   if (USE_MOCK) {
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve, reject) => {
+      const timer = setTimeout(resolve, 1500);
+      signal?.addEventListener(
+        "abort",
+        () => {
+          clearTimeout(timer);
+          reject(new DOMException("The request was aborted.", "AbortError"));
+        },
+        { once: true },
+      );
+    });
     const document = copyDocument(sampleDocument);
     document.title = file.name.replace(/\.[^/.]+$/, "");
     document.file_type = getFileType(file.name);
@@ -49,9 +63,11 @@ export async function uploadDocument(file) {
 
   const formData = new FormData();
   formData.append("file", file);
+  formData.append("language", language);
   return request(`${BASE_URL}/documents`, {
     method: "POST",
     body: formData,
+    signal,
   });
 }
 
@@ -61,4 +77,14 @@ export async function getDocument(id) {
   }
 
   return request(`${BASE_URL}/documents/${encodeURIComponent(id)}`);
+}
+
+export async function deleteDocument(id) {
+  if (USE_MOCK) {
+    return undefined;
+  }
+
+  return request(`${BASE_URL}/documents/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
 }

@@ -10,6 +10,7 @@ export const shortcuts = [
     label: "Previous section",
   },
   { key: "r", code: "KeyR", action: "repeat", label: "Repeat sentence" },
+  { key: "m", code: "KeyM", action: "addBookmark", label: "Add bookmark" },
   {
     key: "i",
     code: "KeyI",

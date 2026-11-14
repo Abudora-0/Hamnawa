@@ -4,21 +4,33 @@ import DocumentView from "../components/DocumentView";
 import ReaderControls from "../components/ReaderControls";
 import { useDocument } from "../context/DocumentContext";
 import { useSettings } from "../context/SettingsContext";
+import { useAnnouncer } from "../context/AnnouncementContext";
 import { useReadingPlayer } from "../hooks/useReadingPlayer";
 import { useReaderActions } from "../hooks/useReaderActions";
 import { useReaderShortcuts } from "../hooks/useReaderShortcuts";
 import ReaderTools from "../components/ReaderTools";
 import { getDocument } from "../services/api";
 import { speech } from "../services/speech";
+import {
+  addBookmark as saveBookmark,
+  addRecent,
+  getBookmarks,
+  getProgress,
+  removeBookmark as deleteBookmark,
+  saveProgress,
+} from "../utils/documentMemory";
 import { buildQueue } from "../utils/readingQueue";
 
 function Reader() {
   const { id } = useParams();
   const { document: contextDocument, setDocument } = useDocument();
   const { cuesEnabled, speechRate } = useSettings();
+  const { announce } = useAnnouncer();
   const [loadingId, setLoadingId] = useState("");
   const [error, setError] = useState("");
+  const [bookmarks, setBookmarks] = useState([]);
   const requestedId = useRef("");
+  const restoredDocumentId = useRef("");
 
   const currentDocument =
     id && String(contextDocument?.id) !== id ? null : contextDocument;
@@ -53,7 +65,77 @@ function Reader() {
     [currentDocument, cuesEnabled],
   );
   const player = useReadingPlayer(items);
-  const actions = useReaderActions(player, items, currentDocument);
+  const readerActions = useReaderActions(player, items, currentDocument);
+
+  useEffect(() => {
+    if (!currentDocument || restoredDocumentId.current === currentDocument.id) {
+      return;
+    }
+
+    restoredDocumentId.current = currentDocument.id;
+    addRecent({
+      id: currentDocument.id,
+      title: currentDocument.title,
+      file_type: currentDocument.file_type,
+      opened_at: new Date().toISOString(),
+    });
+    setBookmarks(getBookmarks(currentDocument.id));
+
+    const progress = getProgress(currentDocument.id);
+    if (progress) {
+      const savedTargetIndex = progress.targetId
+        ? items.findIndex((item) => item.targetId === progress.targetId)
+        : -1;
+      const savedIndex =
+        savedTargetIndex === -1 ? Number(progress.index) : savedTargetIndex;
+      if (savedIndex >= 0 && savedIndex < items.length) {
+        player.goTo(savedIndex);
+        announce(`Resumed at section ${items[savedIndex].sectionTitle}`);
+      }
+    }
+  }, [announce, currentDocument, items]);
+
+  useEffect(() => {
+    if (!currentDocument || !items[player.index]) {
+      return undefined;
+    }
+    const timer = setTimeout(() => {
+      saveProgress(currentDocument.id, {
+        index: player.index,
+        targetId: items[player.index].targetId,
+      });
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [currentDocument, items, player.index]);
+
+  function addCurrentBookmark() {
+    const item = items[player.index];
+    if (!currentDocument || !item) {
+      return;
+    }
+    const locationLabel = currentDocument.file_type === "pptx" ? "slide" : "page";
+    const bookmark = {
+      id: `bookmark-${Date.now()}`,
+      label: `${item.sectionTitle}, ${locationLabel} ${item.location}`,
+      targetId: item.targetId,
+      index: player.index,
+    };
+    saveBookmark(currentDocument.id, bookmark);
+    setBookmarks((currentBookmarks) => [bookmark, ...currentBookmarks]);
+    announce("Bookmark added");
+  }
+
+  function removeCurrentBookmark(bookmarkId) {
+    if (!currentDocument) {
+      return;
+    }
+    deleteBookmark(currentDocument.id, bookmarkId);
+    setBookmarks((currentBookmarks) =>
+      currentBookmarks.filter((bookmark) => bookmark.id !== bookmarkId),
+    );
+  }
+
+  const actions = { ...readerActions, addBookmark: addCurrentBookmark };
   useReaderShortcuts(actions);
 
   useEffect(() => {
@@ -68,7 +150,12 @@ function Reader() {
   }, [items, player.index, player.isPlaying]);
 
   if (error) {
-    return <p role="alert">{error}</p>;
+    return (
+      <section>
+        <p role="alert">{error}</p>
+        <Link to="/upload">Upload again</Link>
+      </section>
+    );
   }
 
   if (loadingId === id) {
@@ -115,6 +202,10 @@ function Reader() {
           previousMatch={actions.previousMatch}
           matchCount={actions.matchCount}
           currentMatch={actions.currentMatch}
+          bookmarks={bookmarks}
+          onAddBookmark={actions.addBookmark}
+          onGoToBookmark={player.goTo}
+          onRemoveBookmark={removeCurrentBookmark}
         />
       ) : null}
       <DocumentView
