@@ -11,6 +11,7 @@ export const shortcuts = [
   },
   { key: "r", code: "KeyR", action: "repeat", label: "Repeat sentence" },
   { key: "m", code: "KeyM", action: "addBookmark", label: "Add bookmark" },
+  { key: "v", code: "KeyV", action: "toggleVoiceCommands", label: "Toggle voice commands" },
   {
     key: "i",
     code: "KeyI",
