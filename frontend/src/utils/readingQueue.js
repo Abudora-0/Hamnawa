@@ -14,12 +14,25 @@ export function buildQueue(document, cuesEnabled) {
   const items = [];
   let itemNumber = 0;
 
-  function addItem(text, targetId, sectionId, isHeading = false) {
+  function addItem(
+    text,
+    targetId,
+    sectionId,
+    sectionTitle,
+    sectionLevel,
+    location,
+    searchText,
+    isHeading = false,
+  ) {
     items.push({
       id: `reading-item-${itemNumber}`,
       text,
       targetId,
       sectionId,
+      sectionTitle,
+      sectionLevel,
+      location,
+      searchText,
       isHeading,
     });
     itemNumber += 1;
@@ -30,7 +43,16 @@ export function buildQueue(document, cuesEnabled) {
     const headingText = cuesEnabled
       ? `Heading level ${section.level}. ${section.title}`
       : section.title;
-    addItem(headingText, `section-${sectionId}`, sectionId, true);
+    addItem(
+      headingText,
+      `section-${sectionId}`,
+      sectionId,
+      section.title,
+      section.level,
+      section.location,
+      section.title,
+      true,
+    );
 
     for (let index = 0; index < section.blocks.length; index += 1) {
       const block = section.blocks[index];
@@ -49,17 +71,45 @@ export function buildQueue(document, cuesEnabled) {
             `List of ${listItems.length} ${itemLabel}.`,
             `block-${listItems[0].id}`,
             sectionId,
+            section.title,
+            section.level,
+            listItems[0].location,
+            "",
           );
         }
         listItems.forEach((listItem) => {
-          addItem(listItem.text, `block-${listItem.id}`, sectionId);
+          addItem(
+            listItem.text,
+            `block-${listItem.id}`,
+            sectionId,
+            section.title,
+            section.level,
+            listItem.location,
+            listItem.text,
+          );
         });
         index -= 1;
       } else if (block.kind === "notice") {
-        addItem(`Notice. ${block.text}`, `block-${block.id}`, sectionId);
+        addItem(
+          `Notice. ${block.text}`,
+          `block-${block.id}`,
+          sectionId,
+          section.title,
+          section.level,
+          block.location,
+          block.text,
+        );
       } else {
         splitSentences(block.text).forEach((sentence) => {
-          addItem(sentence, `block-${block.id}`, sectionId);
+          addItem(
+            sentence,
+            `block-${block.id}`,
+            sectionId,
+            section.title,
+            section.level,
+            block.location,
+            sentence,
+          );
         });
       }
     }

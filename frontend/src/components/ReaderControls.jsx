@@ -1,3 +1,5 @@
+import { shortcuts } from "../utils/shortcuts";
+
 function ReaderControls({
   isPlaying,
   play,
@@ -6,10 +8,13 @@ function ReaderControls({
   previous,
   nextSection,
   previousSection,
+  repeat,
+  goToStart,
+  goToEnd,
   speed,
-  onSpeedChange,
   index,
   total,
+  actions,
 }) {
   return (
     <div className="reader-controls">
@@ -29,11 +34,20 @@ function ReaderControls({
         <button type="button" onClick={nextSection}>
           Next section
         </button>
-        <button type="button" onClick={() => onSpeedChange(-0.25)}>
+        <button type="button" onClick={actions.slower}>
           Slower
         </button>
-        <button type="button" onClick={() => onSpeedChange(0.25)}>
+        <button type="button" onClick={actions.faster}>
           Faster
+        </button>
+        <button type="button" onClick={repeat}>
+          Repeat sentence
+        </button>
+        <button type="button" onClick={goToStart}>
+          Start
+        </button>
+        <button type="button" onClick={goToEnd}>
+          End
         </button>
       </div>
       <p>Speed: {speed}x</p>
@@ -41,12 +55,11 @@ function ReaderControls({
       <div>
         <strong>Keyboard shortcuts</strong>
         <ul>
-          <li>p: play or pause</li>
-          <li>n: next sentence</li>
-          <li>b: previous sentence</li>
-          <li>h: next section</li>
-          <li>shift+h: previous section</li>
-          <li>plus and minus: change speed</li>
+          {shortcuts.map((shortcut) => (
+            <li key={`${shortcut.key}-${shortcut.action}`}>
+              {shortcut.key}: {shortcut.label}
+            </li>
+          ))}
         </ul>
       </div>
     </div>
