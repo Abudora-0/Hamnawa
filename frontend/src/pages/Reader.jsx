@@ -8,6 +8,7 @@ import { useAnnouncer } from "../context/AnnouncementContext";
 import { useReadingPlayer } from "../hooks/useReadingPlayer";
 import { useReaderActions } from "../hooks/useReaderActions";
 import { useReaderShortcuts } from "../hooks/useReaderShortcuts";
+import { useVoiceCommands } from "../hooks/useVoiceCommands";
 import ReaderTools from "../components/ReaderTools";
 import { getDocument } from "../services/api";
 import { speech } from "../services/speech";
@@ -135,7 +136,20 @@ function Reader() {
     );
   }
 
-  const actions = { ...readerActions, addBookmark: addCurrentBookmark };
+  const voiceActions = { ...readerActions, addBookmark: addCurrentBookmark };
+  const voiceCommands = useVoiceCommands(voiceActions, player.isPlaying);
+  const actions = {
+    ...voiceActions,
+    toggleVoiceCommands: () => {
+      if (voiceCommands.listening) {
+        voiceCommands.stop();
+        announce("Voice commands off");
+      } else {
+        voiceCommands.start();
+        announce("Voice commands on");
+      }
+    },
+  };
   useReaderShortcuts(actions);
 
   useEffect(() => {
@@ -177,6 +191,25 @@ function Reader() {
   return (
     <section>
       <h1>{currentDocument.title}</h1>
+      {voiceCommands.supported ? (
+        <>
+          <button
+            type="button"
+            aria-pressed={voiceCommands.listening}
+            onClick={actions.toggleVoiceCommands}
+          >
+            Voice commands: {voiceCommands.listening ? "on" : "off"}
+          </button>
+          <p>
+            Voice commands send your speech to your browser&apos;s speech
+            service.
+          </p>
+        </>
+      ) : (
+        <p role="status">
+          Voice commands need Chrome or Edge. Keyboard controls still work.
+        </p>
+      )}
       {isSpeechSupported ? (
         <ReaderControls
           isPlaying={player.isPlaying}
