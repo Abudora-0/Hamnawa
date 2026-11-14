@@ -89,14 +89,18 @@ button[aria-disabled="true"] {
 
 button,
 a,
-input {
+input,
+textarea,
+select {
   outline: 3px solid transparent;
   outline-offset: 3px;
 }
 
 button:focus-visible,
 a:focus-visible,
-input:focus-visible {
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
   outline-color: var(--focus);
 }
 
@@ -183,6 +187,55 @@ fieldset label {
 
 input {
   margin-right: 0.5rem;
+}
+
+textarea,
+select {
+  display: block;
+  max-width: 100%;
+  margin: 0.35rem 0 1rem;
+  padding: 0.5rem;
+  border: 2px solid var(--border);
+  background: var(--background);
+  color: var(--text);
+}
+
+.speak-actions,
+.quick-phrases,
+.add-phrase,
+.speak-history li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.speak-status {
+  min-height: 1.6em;
+  font-weight: bold;
+}
+
+.quick-phrases {
+  align-items: stretch;
+}
+
+.quick-phrase {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.quick-phrase button:first-child {
+  flex: 1;
+}
+
+.speak-history {
+  padding-left: 1.5rem;
+}
+
+.speak-history li {
+  justify-content: space-between;
+  margin: 0.5rem 0;
 }
 
 .error-message {
