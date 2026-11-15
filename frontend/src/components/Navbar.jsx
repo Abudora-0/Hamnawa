@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 const links = [
   { to: "/", label: "Home", end: true },
@@ -10,6 +10,8 @@ const links = [
 ];
 
 function Navbar() {
+  const location = useLocation();
+
   return (
     <nav aria-label="Main navigation">
       <ul className="nav-list">
@@ -18,7 +20,12 @@ function Navbar() {
             <NavLink
               to={link.to}
               end={link.end}
-              className={({ isActive }) => (isActive ? "active" : undefined)}
+              className={({ isActive }) => (isActive ? "active link" : "link")}
+              aria-current={
+                (link.end ? location.pathname === link.to : location.pathname.startsWith(link.to))
+                  ? "page"
+                  : undefined
+              }
             >
               {link.label}
             </NavLink>
