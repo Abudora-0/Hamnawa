@@ -5,7 +5,7 @@ import { speech } from "../services/speech";
 import { splitSentences } from "../utils/readingQueue";
 
 export function useSpeaker() {
-  const { speechRate, voiceName } = useSettings();
+  const { speechRate, voiceName, voiceEngine } = useSettings();
   const { announce } = useAnnouncer();
   const [isSpeaking, setIsSpeaking] = useState(false);
   const generationRef = useRef(0);
@@ -36,7 +36,7 @@ export function useSpeaker() {
 
       speech.speak(
         sentences[sentenceIndex],
-        { rate: speechRate, voiceName },
+        { rate: speechRate, voiceName, engine: voiceEngine },
         () => {
           if (generation !== generationRef.current) {
             return;
@@ -48,6 +48,7 @@ export function useSpeaker() {
           }
           speakSentence(sentenceIndex + 1);
         },
+        announce,
       );
     }
 

@@ -88,3 +88,30 @@ export async function deleteDocument(id) {
     method: "DELETE",
   });
 }
+
+export async function synthesizeSpeech({ text, lang, voice }, signal) {
+  if (USE_MOCK) {
+    throw new Error("Cloud voice is not available.");
+  }
+
+  let response;
+  try {
+    response = await fetch(`${BASE_URL}/speech/synthesize`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, lang, voice: voice || null }),
+      signal,
+    });
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw error;
+    }
+    throw new Error("Cannot reach the server. Please try again.");
+  }
+
+  if (!response.ok) {
+    throw new Error(await getResponseError(response));
+  }
+
+  return response.blob();
+}

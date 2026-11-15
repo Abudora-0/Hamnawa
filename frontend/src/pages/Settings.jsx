@@ -30,6 +30,8 @@ function Settings() {
     setSpeechRate,
     voiceName,
     setVoiceName,
+    voiceEngine,
+    setVoiceEngine,
     cuesEnabled,
     setCuesEnabled,
     continuousReading,
@@ -58,8 +60,9 @@ function Settings() {
     speech.cancel();
     speech.speak(
       "This is how Hamnawa will read to you.",
-      { rate: speechRate, voiceName },
+      { rate: speechRate, voiceName, engine: voiceEngine },
       () => {},
+      announce,
     );
   }
 
@@ -123,6 +126,29 @@ function Settings() {
         <legend>Speech</legend>
         {speech.isSupported() ? (
           <>
+            <fieldset>
+              <legend>Voice engine</legend>
+              <label>
+                <input
+                  type="radio"
+                  name="voice-engine"
+                  value="device"
+                  checked={voiceEngine === "device"}
+                  onChange={(event) => setVoiceEngine(event.target.value)}
+                />
+                Device voice (works offline)
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="voice-engine"
+                  value="cloud"
+                  checked={voiceEngine === "cloud"}
+                  onChange={(event) => setVoiceEngine(event.target.value)}
+                />
+                Cloud voice (clearer Urdu, needs internet)
+              </label>
+            </fieldset>
             <label htmlFor="speech-rate">
               Speech speed: {speechRate}x
             </label>
@@ -136,19 +162,23 @@ function Settings() {
               aria-valuetext={`${speechRate} times normal speed`}
               onChange={(event) => setSpeechRate(Number(event.target.value))}
             />
-            <label htmlFor="voice">Voice</label>
-            <select
-              id="voice"
-              value={voiceName}
-              onChange={(event) => setVoiceName(event.target.value)}
-            >
-              <option value="">Default voice</option>
-              {voices.map((voice) => (
-                <option key={`${voice.name}-${voice.lang}`} value={voice.name}>
-                  {voice.name} ({voice.lang})
-                </option>
-              ))}
-            </select>
+            {voiceEngine === "device" ? (
+              <>
+                <label htmlFor="voice">Voice</label>
+                <select
+                  id="voice"
+                  value={voiceName}
+                  onChange={(event) => setVoiceName(event.target.value)}
+                >
+                  <option value="">Default voice</option>
+                  {voices.map((voice) => (
+                    <option key={`${voice.name}-${voice.lang}`} value={voice.name}>
+                      {voice.name} ({voice.lang})
+                    </option>
+                  ))}
+                </select>
+              </>
+            ) : null}
             <label>
               <input
                 type="checkbox"

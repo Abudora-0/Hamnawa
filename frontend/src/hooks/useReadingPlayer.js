@@ -4,7 +4,8 @@ import { useSettings } from "../context/SettingsContext";
 import { speech } from "../services/speech";
 
 export function useReadingPlayer(items) {
-  const { speechRate, voiceName, continuousReading } = useSettings();
+  const { speechRate, voiceName, voiceEngine, continuousReading } =
+    useSettings();
   const { announce } = useAnnouncer();
   const [index, setIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -27,7 +28,7 @@ export function useReadingPlayer(items) {
       }
       speech.speak(
         items[index].text,
-        { rate: speechRate, voiceName },
+        { rate: speechRate, voiceName, engine: voiceEngine },
         () => {
           if (cancelled) {
             return;
@@ -46,7 +47,11 @@ export function useReadingPlayer(items) {
             setIndex(index + 1);
           }
         },
+        announce,
       );
+      if (items[index + 1]) {
+        speech.prefetch(items[index + 1].text);
+      }
     }, 50);
 
     return () => {
@@ -60,6 +65,7 @@ export function useReadingPlayer(items) {
     items,
     speechRate,
     voiceName,
+    voiceEngine,
     continuousReading,
     announce,
     repeatVersion,
