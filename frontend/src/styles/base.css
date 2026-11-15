@@ -15,11 +15,11 @@ body,
 button,
 input,
 textarea,
-select { font-family: "Atkinson Hyperlegible", Arial, sans-serif; }
+select { font-family: var(--font-body); }
 
 h1,
 h2,
-h3 { font-family: "Bricolage Grotesque", Arial, sans-serif; letter-spacing: -0.03em; text-wrap: balance; }
+h3 { font-family: var(--font-heading); letter-spacing: -0.03em; text-wrap: balance; }
 
 a { color: var(--link); }
 
@@ -104,7 +104,7 @@ td { border: 2px solid var(--border); padding: 0.5rem 0.75rem; text-align: left;
 }
 
 [lang="ur"] {
-  font-family: "Noto Nastaliq Urdu", "Noto Sans Arabic", serif;
+  font-family: var(--font-urdu);
   line-height: 2.1;
 }
 

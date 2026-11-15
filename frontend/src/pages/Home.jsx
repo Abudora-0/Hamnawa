@@ -1,13 +1,25 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAnnouncer } from "../context/AnnouncementContext";
+import { useDocument } from "../context/DocumentContext";
+import { sampleDocument } from "../services/mockData";
 import { getRecent } from "../utils/documentMemory";
 
 function Home() {
   const [recentDocuments, setRecentDocuments] = useState([]);
+  const { setDocument } = useDocument();
+  const { announce } = useAnnouncer();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRecentDocuments(getRecent());
   }, []);
+
+  function loadSample() {
+    setDocument(sampleDocument);
+    announce(`Document ready. ${sampleDocument.sections.length} sections found.`);
+    navigate(`/reader/${sampleDocument.id}`);
+  }
 
   return (
     <section className="home-page">
@@ -21,7 +33,7 @@ function Home() {
           </p>
           <div className="hero-actions">
             <Link className="button-link" to="/upload">Upload a document</Link>
-            <Link className="btn-ghost" to="/upload#sample">Try the sample</Link>
+            <button className="btn-ghost" type="button" onClick={loadSample}>Try the sample</button>
           </div>
         </div>
         <div className="hero-wave" aria-hidden="true">
