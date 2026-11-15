@@ -94,7 +94,7 @@ function Reader() {
         announce(`Resumed at section ${items[savedIndex].sectionTitle}`);
       }
     }
-  }, [announce, currentDocument, items]);
+  }, [announce, currentDocument, items, player]);
 
   useEffect(() => {
     if (!currentDocument || !items[player.index]) {
