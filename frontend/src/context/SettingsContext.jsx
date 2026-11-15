@@ -63,6 +63,9 @@ export function SettingsProvider({ children }) {
   const [screenReaderMode, setScreenReaderMode] = useState(() =>
     getStoredBoolean("hamnawa-screen-reader-mode", false),
   );
+  const [reduceMotion, setReduceMotion] = useState(() =>
+    getStoredBoolean("hamnawa-reduce-motion", false),
+  );
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -86,6 +89,14 @@ export function SettingsProvider({ children }) {
     () => saveValue("hamnawa-screen-reader-mode", screenReaderMode),
     [screenReaderMode],
   );
+  useEffect(() => {
+    if (reduceMotion) {
+      document.documentElement.dataset.motion = "reduced";
+    } else {
+      delete document.documentElement.dataset.motion;
+    }
+    saveValue("hamnawa-reduce-motion", reduceMotion);
+  }, [reduceMotion]);
 
   return (
     <SettingsContext.Provider
@@ -106,6 +117,8 @@ export function SettingsProvider({ children }) {
         setContinuousReading,
         screenReaderMode,
         setScreenReaderMode,
+        reduceMotion,
+        setReduceMotion,
       }}
     >
       {children}
