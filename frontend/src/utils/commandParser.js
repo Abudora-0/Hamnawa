@@ -22,8 +22,11 @@ const commands = [
   ["repeat", ["repeat", "say again", "again"]],
   ["faster", ["faster", "speed up"]],
   ["slower", ["slower", "slow down"]],
-  ["goToStart", ["go to start", "go to the beginning"]],
-  ["goToEnd", ["go to the end"]],
+  [
+    "goToStart",
+    ["go to start", "go to the start", "go to the beginning", "go to beginning", "start over"],
+  ],
+  ["goToEnd", ["go to end", "go to the end"]],
   ["announcePosition", ["where am i", "position"]],
   ["addBookmark", ["bookmark", "add bookmark"]],
   ["help", ["help", "what can i say"]],

@@ -77,6 +77,10 @@ export function useReadingPlayer(items) {
     announce("Paused");
   }
 
+  function pauseQuietly() {
+    setIsPlaying(false);
+  }
+
   function next() {
     setIndex((currentIndex) =>
       Math.min(currentIndex + 1, Math.max(items.length - 1, 0)),
@@ -125,6 +129,7 @@ export function useReadingPlayer(items) {
     isPlaying,
     play,
     pause,
+    pauseQuietly,
     next,
     previous,
     nextSection,
