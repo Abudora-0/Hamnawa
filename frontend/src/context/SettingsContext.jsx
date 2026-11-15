@@ -51,6 +51,9 @@ export function SettingsProvider({ children }) {
   const [voiceName, setVoiceName] = useState(() =>
     getStoredValue("hamnawa-voice-name", ""),
   );
+  const [voiceEngine, setVoiceEngine] = useState(() =>
+    getStoredValue("hamnawa-voice-engine", "device"),
+  );
   const [cuesEnabled, setCuesEnabled] = useState(() =>
     getStoredBoolean("hamnawa-cues-enabled", true),
   );
@@ -73,6 +76,7 @@ export function SettingsProvider({ children }) {
 
   useEffect(() => saveValue("hamnawa-speech-rate", speechRate), [speechRate]);
   useEffect(() => saveValue("hamnawa-voice-name", voiceName), [voiceName]);
+  useEffect(() => saveValue("hamnawa-voice-engine", voiceEngine), [voiceEngine]);
   useEffect(() => saveValue("hamnawa-cues-enabled", cuesEnabled), [cuesEnabled]);
   useEffect(
     () => saveValue("hamnawa-continuous-reading", continuousReading),
@@ -94,6 +98,8 @@ export function SettingsProvider({ children }) {
         setSpeechRate,
         voiceName,
         setVoiceName,
+        voiceEngine,
+        setVoiceEngine,
         cuesEnabled,
         setCuesEnabled,
         continuousReading,
