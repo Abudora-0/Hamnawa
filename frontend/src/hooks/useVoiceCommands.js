@@ -20,6 +20,8 @@ export function useVoiceCommands(actions, isPlaying) {
   const listeningRef = useRef(false);
   const actionsRef = useRef(actions);
   const isPlayingRef = useRef(isPlaying);
+  const wasPlayingRef = useRef(false);
+  const resumeTimerRef = useRef(null);
   const [listening, setListening] = useState(false);
   const { announce } = useAnnouncer();
 
@@ -28,6 +30,9 @@ export function useVoiceCommands(actions, isPlaying) {
 
   const stop = useCallback(() => {
     listeningRef.current = false;
+    clearTimeout(resumeTimerRef.current);
+    resumeTimerRef.current = null;
+    wasPlayingRef.current = false;
     setListening(false);
     recognitionRef.current?.stop();
   }, []);
@@ -56,6 +61,8 @@ export function useVoiceCommands(actions, isPlaying) {
     recognition.continuous = true;
     recognition.interimResults = false;
     recognition.onresult = (event) => {
+      clearTimeout(resumeTimerRef.current);
+      resumeTimerRef.current = null;
       const result = event.results[event.results.length - 1];
       const text = result[0].transcript;
       const command = parseCommand(text);
@@ -68,22 +75,33 @@ export function useVoiceCommands(actions, isPlaying) {
         if (command.action === "help") {
           announce(HELP_MESSAGE);
         }
-        if (commandAction) {
+        if (command.action !== "help" && commandAction) {
           commandAction(command.value);
         }
       }
 
       if (
-        isPlayingRef.current &&
-        command?.action !== "play" &&
-        command?.action !== "pause"
+        wasPlayingRef.current
       ) {
-        actionsRef.current.play();
+        wasPlayingRef.current = false;
+        if (command?.action !== "play" && command?.action !== "pause") {
+          actionsRef.current.play();
+        }
       }
     };
     recognition.onsoundstart = () => {
       if (isPlayingRef.current) {
-        actionsRef.current.pause();
+        wasPlayingRef.current = true;
+        actionsRef.current.pauseQuietly();
+      }
+    };
+    recognition.onsoundend = () => {
+      if (wasPlayingRef.current) {
+        clearTimeout(resumeTimerRef.current);
+        resumeTimerRef.current = setTimeout(() => {
+          wasPlayingRef.current = false;
+          actionsRef.current.play();
+        }, 2500);
       }
     };
     recognition.onend = () => {
@@ -111,12 +129,19 @@ export function useVoiceCommands(actions, isPlaying) {
       } else if (event.error === "network") {
         stop();
         announce("There was a network problem with voice commands.");
+      } else if (event.error === "audio-capture") {
+        stop();
+        announce("No microphone was found. You can still use the keyboard.");
+      } else if (event.error === "aborted") {
+        return;
       }
     };
     recognitionRef.current = recognition;
 
     return () => {
       listeningRef.current = false;
+      clearTimeout(resumeTimerRef.current);
+      resumeTimerRef.current = null;
       recognition.stop();
       recognitionRef.current = null;
     };

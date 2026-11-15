@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import DocumentView from "../components/DocumentView";
 import ReaderControls from "../components/ReaderControls";
 import { useDocument } from "../context/DocumentContext";
@@ -27,7 +27,6 @@ function Reader() {
   const { document: contextDocument, setDocument } = useDocument();
   const { cuesEnabled, speechRate, screenReaderMode } = useSettings();
   const { announce } = useAnnouncer();
-  const navigate = useNavigate();
   const [loadingId, setLoadingId] = useState("");
   const [error, setError] = useState("");
   const [bookmarks, setBookmarks] = useState([]);
@@ -140,7 +139,6 @@ function Reader() {
   const voiceActions = {
     ...readerActions,
     addBookmark: addCurrentBookmark,
-    help: () => navigate("/help"),
   };
   const voiceCommands = useVoiceCommands(voiceActions, player.isPlaying);
   const actions = {
@@ -203,11 +201,14 @@ function Reader() {
             aria-pressed={voiceCommands.listening}
             onClick={actions.toggleVoiceCommands}
           >
-            Voice commands: {voiceCommands.listening ? "on" : "off"}
+            Voice commands
+            <span aria-hidden="true">
+              : {voiceCommands.listening ? "on" : "off"}
+            </span>
           </button>
           <p>
             Voice commands send your speech to your browser&apos;s speech
-            service.
+            service. Use headphones so the microphone does not hear the reader.
           </p>
         </>
       ) : (

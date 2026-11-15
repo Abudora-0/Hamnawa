@@ -11,8 +11,8 @@ const voiceCommands = [
   "slower",
   "repeat",
   "bookmark",
-  "go to page",
-  "search for",
+  "go to page 5",
+  "search for WORD",
   "help",
 ];
 
@@ -42,7 +42,7 @@ function Help() {
         </thead>
         <tbody>
           {activeShortcuts.map((shortcut) => (
-            <tr key={`${shortcut.action}-${shortcut.srCode}`}>
+            <tr key={`${shortcut.key}-${shortcut.action}`}>
               <td>{getShortcutLabel(shortcut, screenReaderMode)}</td>
               <td>{shortcut.label}</td>
             </tr>
@@ -52,6 +52,7 @@ function Help() {
 
       <h2>Voice commands</h2>
       <p>Say one of these commands while voice commands are on:</p>
+      <p>Use headphones, so the microphone does not hear the reader.</p>
       <ul>
         {voiceCommands.map((command) => (
           <li key={command}>{command}</li>

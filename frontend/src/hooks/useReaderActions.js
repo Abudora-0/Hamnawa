@@ -109,6 +109,7 @@ export function useReaderActions(player, items, document) {
   const actions = {
     play: player.play,
     pause: player.pause,
+    pauseQuietly: player.pauseQuietly,
     toggle: player.isPlaying ? player.pause : player.play,
     next: player.next,
     previous: player.previous,
