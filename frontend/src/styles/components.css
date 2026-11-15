@@ -116,7 +116,7 @@
 }
 .nav-list a:hover::after,
 .nav-list a.active::after { opacity: 1; }
-.toast { position: fixed; top: 1rem; right: 1rem; z-index: 3; max-width: min(24rem, calc(100vw - 2rem)); }
+.toast { position: fixed; bottom: 1rem; left: 1rem; z-index: 3; max-width: min(24rem, calc(100vw - 2rem)); pointer-events: none; }
 
 @media (max-width: 40rem) {
   .site-header,

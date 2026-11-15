@@ -150,7 +150,7 @@ main:focus { outline: none; }
 .font-xlarge { font-size: 24px; }
 .nested-group { margin: var(--space-4) 0; }
 .segmented-control { display: flex; flex-wrap: wrap; gap: 0; }
-.segmented-control label { margin: 0; padding: 0.6rem 0.8rem; border: 2px solid var(--border); cursor: pointer; }
+.segmented-control label { position: relative; margin: 0; padding: 0.6rem 0.8rem; border: 2px solid var(--border); cursor: pointer; }
 .segmented-control label + label { border-left: 0; }
 .segmented-control input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .segmented-control label:has(input:checked) { background: var(--accent); color: var(--on-accent); }
@@ -205,6 +205,7 @@ main:focus { outline: none; }
     position: sticky;
     bottom: 0;
     z-index: 1;
+    padding: var(--space-3);
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
       "wave wave"
@@ -219,6 +220,17 @@ main:focus { outline: none; }
   .now-reading { grid-area: now; }
   .position-text { grid-area: position; }
   .more-controls { grid-area: more; }
+  body:has(.reader-controls) .toast { bottom: 14rem; }
+}
+
+@media (min-width: 40rem) and (max-width: 63.999rem) and (min-height: 36rem) {
+  .reader-controls {
+    grid-template-areas:
+      "wave wave"
+      "transport transport"
+      "speed position"
+      "now more";
+  }
 }
 
 @media (min-width: 64rem) {
