@@ -170,8 +170,8 @@ function Reader() {
     return (
       <section>
         <h1>Reader</h1>
-        <p role="alert">{error}</p>
-        <Link to="/upload">Upload again</Link>
+        <p className="error-message" role="alert">{error}</p>
+        <Link className="btn" to="/upload">Upload again</Link>
       </section>
     );
   }
@@ -189,10 +189,10 @@ function Reader() {
     return (
       <section>
         <h1>Reader</h1>
-          <div className="panel reader-state">
-            <p>No document loaded yet.</p>
-            <Link className="btn" to="/upload">Upload a document</Link>
-          </div>
+        <div className="panel reader-state">
+          <p>No document loaded yet.</p>
+          <Link className="btn" to="/upload">Upload a document</Link>
+        </div>
       </section>
     );
   }

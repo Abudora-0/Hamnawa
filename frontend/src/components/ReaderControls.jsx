@@ -46,10 +46,14 @@ function ReaderControls({
     <div className="reader-controls panel">
       <WaveProgress index={index} total={total} />
       <div className="now-reading">
-        <span>Now reading</span>
-        <span className={`sound-bars${isPlaying ? " is-playing" : ""}`} aria-hidden="true">
-          <i /><i /><i /><i />
-        </span>
+        {isPlaying ? (
+          <>
+            <span>Now reading</span>
+            <span className="sound-bars is-playing" aria-hidden="true">
+              <i /><i /><i /><i />
+            </span>
+          </>
+        ) : <span>Paused</span>}
       </div>
       <div className="transport-cluster" role="group" aria-label="Reading controls">
         <button className="control-button" type="button" onClick={actions.previousSection}>
