@@ -306,3 +306,43 @@ select {
 :root[data-theme="contrast"] fieldset {
   border-width: 3px;
 }
+
+@media (max-width: 40rem) {
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nav-list {
+    gap: 0.5rem;
+  }
+
+  main {
+    padding: 1rem 3%;
+  }
+
+  .reader-tools form,
+  .add-phrase {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .reader-tools input,
+  .add-phrase input,
+  .reader-tools button,
+  .add-phrase button {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .speak-history li {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
