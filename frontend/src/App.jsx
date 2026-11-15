@@ -6,6 +6,7 @@ import Reader from "./pages/Reader";
 import SpeakAloud from "./pages/SpeakAloud";
 import Settings from "./pages/Settings";
 import Help from "./pages/Help";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/speak" element={<SpeakAloud />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/help" element={<Help />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>
   );

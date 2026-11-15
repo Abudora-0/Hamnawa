@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import SkipLink from "./SkipLink";
@@ -21,6 +21,7 @@ function Layout({ children }) {
   const hasRendered = useRef(false);
   const { announcement } = useAnnouncer();
   const { screenReaderMode } = useSettings();
+  const [toastAnnouncement, setToastAnnouncement] = useState("");
 
   useEffect(() => {
     function handleHelpShortcut(event) {
@@ -50,7 +51,7 @@ function Layout({ children }) {
 
   useEffect(() => {
     const firstPath = `/${location.pathname.split("/")[1]}`;
-    const pageName = pageNames[firstPath] || "Hamnawa";
+    const pageName = pageNames[firstPath] || "This page is not here";
     document.title = `${pageName} | Hamnawa`;
 
     if (!hasRendered.current) {
@@ -61,12 +62,21 @@ function Layout({ children }) {
     mainRef.current?.focus();
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (typeof announcement !== "string" || !announcement) {
+      return undefined;
+    }
+    setToastAnnouncement(announcement);
+    const timeout = window.setTimeout(() => setToastAnnouncement(""), 4000);
+    return () => window.clearTimeout(timeout);
+  }, [announcement]);
+
   return (
     <>
       <SkipLink />
       <header className="site-header">
-        <Link className="brand" to="/">
-          Hamnawa
+        <Link className="brand" to="/" aria-label="Hamnawa home">
+          Hamnawa <span className="brand-urdu" lang="ur">ہم نوا</span>
         </Link>
         <Navbar />
       </header>
@@ -76,6 +86,21 @@ function Layout({ children }) {
       <div className="live-region" aria-live="polite" aria-atomic="true">
         {announcement}
       </div>
+      {toastAnnouncement ? (
+        <div className="toast panel" aria-hidden="true">
+          {toastAnnouncement}
+        </div>
+      ) : null}
+      <footer className="site-footer">
+        <p>Hamnawa. Made so every student can listen.</p>
+        <nav aria-label="Footer navigation">
+          <ul className="footer-links">
+            <li><Link className="link" to="/help">Help</Link></li>
+            <li><Link className="link" to="/settings">Settings</Link></li>
+          </ul>
+        </nav>
+        <p>Documents are deleted from the server after 24 hours.</p>
+      </footer>
     </>
   );
 }

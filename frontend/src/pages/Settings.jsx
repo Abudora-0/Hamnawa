@@ -38,6 +38,8 @@ function Settings() {
     setContinuousReading,
     screenReaderMode,
     setScreenReaderMode,
+    reduceMotion,
+    setReduceMotion,
   } = useSettings();
   const { setDocument } = useDocument();
   const { announce } = useAnnouncer();
@@ -96,6 +98,17 @@ function Settings() {
             {option.label}
           </label>
         ))}
+      </fieldset>
+      <fieldset>
+        <legend>Motion</legend>
+        <label>
+          <input
+            type="checkbox"
+            checked={reduceMotion}
+            onChange={(event) => setReduceMotion(event.target.checked)}
+          />
+          Reduce animations
+        </label>
       </fieldset>
       <fieldset>
         <legend>Saved data</legend>
