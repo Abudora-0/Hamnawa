@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSpeaker } from "../hooks/useSpeaker";
 import { useAnnouncer } from "../context/AnnouncementContext";
 import { getJSON, setJSON } from "../utils/storage";
@@ -31,6 +31,7 @@ function SpeakAloud() {
   const [history, setHistory] = useState(() =>
     readList(SPEAK_HISTORY_KEY, []),
   );
+  const quickPhrasesRef = useRef(null);
   const { speak, stop, isSpeaking } = useSpeaker();
   const { announce } = useAnnouncer();
 
@@ -83,6 +84,7 @@ function SpeakAloud() {
     setPhrases(nextPhrases);
     setJSON(QUICK_PHRASES_KEY, nextPhrases);
     announce("Phrase removed");
+    requestAnimationFrame(() => quickPhrasesRef.current?.focus());
   }
 
   function clearHistory() {
@@ -104,10 +106,10 @@ function SpeakAloud() {
   }
 
   return (
-    <section>
+    <section className="speak-page">
       <h1>Speak Aloud</h1>
       <p>Type a message for Hamnawa to say out loud.</p>
-      <form onSubmit={handleSubmit}>
+      <form className="speak-form panel" onSubmit={handleSubmit}>
         <label htmlFor="speak-text">Type what you want to say</label>
         <textarea
           id="speak-text"
@@ -117,27 +119,45 @@ function SpeakAloud() {
           rows="5"
         />
         <div className="speak-actions">
-          <button type="submit">Speak</button>
-          <button type="button" onClick={stop} disabled={!isSpeaking}>
+          <button className="btn" type="submit">Speak</button>
+          <button
+            className="btn-ghost"
+            type="button"
+            aria-disabled={!isSpeaking}
+            onClick={() => {
+              if (isSpeaking) {
+                stop();
+              }
+            }}
+          >
             Stop
           </button>
-          <button type="button" onClick={() => setText("")}>
+          <button className="btn-ghost" type="button" onClick={() => setText("")}>
             Clear
           </button>
         </div>
       </form>
       <p className="speak-status">
-        {isSpeaking ? "Speaking" : ""}
+        {isSpeaking ? (
+          <>
+            <span className="sound-bars is-playing" aria-hidden="true">
+              <i /><i /><i /><i />
+            </span>{" "}
+            Speaking
+          </>
+        ) : ""}
       </p>
 
       <h2>Quick phrases</h2>
-      <div className="quick-phrases">
+      <span className="thread thread-under" aria-hidden="true" />
+      <div className="quick-phrases" ref={quickPhrasesRef} tabIndex={-1}>
         {phrases.map((phrase) => (
-          <div className="quick-phrase" key={phrase}>
-            <button type="button" onClick={() => speakText(phrase)}>
+          <div className="quick-phrase panel" key={phrase}>
+            <button className="btn-ghost" type="button" onClick={() => speakText(phrase)}>
               {phrase}
             </button>
             <button
+              className="phrase-remove"
               type="button"
               onClick={() => removePhrase(phrase)}
               aria-label={`Remove ${phrase}`}
@@ -147,30 +167,31 @@ function SpeakAloud() {
           </div>
         ))}
       </div>
-      <form className="add-phrase" onSubmit={addPhrase}>
+      <form className="add-phrase panel" onSubmit={addPhrase}>
         <label htmlFor="new-phrase">New phrase</label>
         <input
           id="new-phrase"
           value={newPhrase}
           onChange={(event) => setNewPhrase(event.target.value)}
         />
-        <button type="submit">Add phrase</button>
+        <button className="btn" type="submit">Add phrase</button>
       </form>
 
       <h2>History</h2>
+      <span className="thread thread-under" aria-hidden="true" />
       {history.length ? (
         <>
           <ol className="speak-history">
             {history.map((item) => (
               <li key={item}>
                 <span>{item}</span>
-                <button type="button" onClick={() => speakText(item)}>
+                <button className="btn-ghost" type="button" onClick={() => speakText(item)}>
                   Speak again
                 </button>
               </li>
             ))}
           </ol>
-          <button type="button" onClick={clearHistory}>
+          <button className="btn-ghost" type="button" onClick={clearHistory}>
             Clear history
           </button>
         </>
