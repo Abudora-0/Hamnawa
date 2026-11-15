@@ -4,7 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Hamnawa accessibility reader" />
+    <meta name="theme-color" content="#8E1B4F" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Home | Hamnawa</title>
+    <script>
+      try {
+        const root = document.documentElement;
+        const theme = localStorage.getItem("hamnawa-theme");
+        const fontSize = localStorage.getItem("hamnawa-font-size");
+        const reduceMotion = localStorage.getItem("hamnawa-reduce-motion");
+        if (theme) root.dataset.theme = theme;
+        if (fontSize) root.dataset.font = fontSize;
+        if (reduceMotion === "true") root.dataset.motion = "reduced";
+      } catch {
+        // Use the defaults when storage is unavailable.
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
