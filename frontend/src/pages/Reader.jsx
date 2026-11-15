@@ -177,26 +177,34 @@ function Reader() {
   }
 
   if (loadingId === id) {
-    return <p role="status">Loading document</p>;
+    return (
+      <div className="panel reader-state" role="status">
+        <span className="thread thread-loading" aria-hidden="true" />
+        <span>Loading document</span>
+      </div>
+    );
   }
 
   if (!currentDocument) {
     return (
       <section>
         <h1>Reader</h1>
-        <p>No document loaded yet.</p>
-        <Link to="/upload">Upload a document</Link>
+          <div className="panel reader-state">
+            <p>No document loaded yet.</p>
+            <Link className="btn" to="/upload">Upload a document</Link>
+          </div>
       </section>
     );
   }
 
   const isSpeechSupported = speech.isSupported();
   return (
-    <section>
+    <section className="reader-page">
       <h1>{currentDocument.title}</h1>
       {voiceCommands.supported ? (
         <>
           <button
+            className="btn-ghost voice-toggle"
             type="button"
             aria-pressed={voiceCommands.listening}
             onClick={actions.toggleVoiceCommands}
@@ -222,37 +230,34 @@ function Reader() {
           index={player.index}
           speed={speechRate}
           actions={actions}
-          screenReaderMode={screenReaderMode}
           total={items.length}
         />
-      ) : (
-        <p role="status">
-          Your browser does not support speech. Try Chrome or Edge.
-        </p>
-      )}
-      {isSpeechSupported ? (
-        <ReaderTools
+      ) : <p role="status">Your browser does not support speech. Try Chrome or Edge.</p>}
+      <div className="reader-layout">
+        <DocumentView
           document={currentDocument}
-          currentSectionId={items[player.index]?.sectionId}
-          onSelectSection={actions.goToSection}
-          goToPage={actions.goToPage}
-          search={actions.search}
-          nextMatch={actions.nextMatch}
-          previousMatch={actions.previousMatch}
-          matchCount={actions.matchCount}
-          currentMatch={actions.currentMatch}
-          bookmarks={bookmarks}
-          onAddBookmark={actions.addBookmark}
-          onGoToBookmark={(bookmark) =>
-            actions.goToTarget(bookmark.targetId, bookmark.index)
-          }
-          onRemoveBookmark={removeCurrentBookmark}
+          currentTargetId={items[player.index]?.targetId}
         />
-      ) : null}
-      <DocumentView
-        document={currentDocument}
-        currentTargetId={items[player.index]?.targetId}
-      />
+        {isSpeechSupported ? (
+          <ReaderTools
+            document={currentDocument}
+            currentSectionId={items[player.index]?.sectionId}
+            onSelectSection={actions.goToSection}
+            goToPage={actions.goToPage}
+            search={actions.search}
+            nextMatch={actions.nextMatch}
+            previousMatch={actions.previousMatch}
+            matchCount={actions.matchCount}
+            currentMatch={actions.currentMatch}
+            bookmarks={bookmarks}
+            onAddBookmark={actions.addBookmark}
+            onGoToBookmark={(bookmark) =>
+              actions.goToTarget(bookmark.targetId, bookmark.index)
+            }
+            onRemoveBookmark={removeCurrentBookmark}
+          />
+        ) : null}
+      </div>
     </section>
   );
 }
