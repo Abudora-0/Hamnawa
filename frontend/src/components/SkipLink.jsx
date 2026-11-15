@@ -1,6 +1,6 @@
 function SkipLink() {
   return (
-    <a className="skip-link" href="#main">
+    <a className="skip-link btn" href="#main">
       Skip to main content
     </a>
   );
