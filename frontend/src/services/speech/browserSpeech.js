@@ -18,7 +18,7 @@ export const browserSpeech = {
       window.speechSynthesis.removeEventListener("voiceschanged", callback);
   },
 
-  speak(text, { rate, voiceName }, onEnd) {
+  speak(text, { rate, voiceName }, onEnd, onError) {
     if (!this.isSupported()) {
       return;
     }
@@ -40,7 +40,12 @@ export const browserSpeech = {
       }
     };
     utterance.onend = finish;
-    utterance.onerror = finish;
+    utterance.onerror = (event) => {
+      if (event.error !== "canceled" && event.error !== "interrupted") {
+        onError?.(event);
+      }
+      finish();
+    };
     window.speechSynthesis.speak(utterance);
   },
 
