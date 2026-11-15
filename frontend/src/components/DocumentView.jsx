@@ -66,7 +66,7 @@ function Section({ section, currentTargetId }) {
 
   const headingUrdu = isUrdu(section.title);
   return (
-    <section>
+    <section className="document-section">
       <Heading
         className={currentTargetId === `section-${section.id}` ? "current" : ""}
         id={`section-${section.id}`}
@@ -89,7 +89,7 @@ function Section({ section, currentTargetId }) {
 
 function DocumentView({ document, currentTargetId }) {
   return (
-    <div>
+    <div className="document-view reading-column">
       {document.sections.map((section) => (
         <Section
           section={section}
