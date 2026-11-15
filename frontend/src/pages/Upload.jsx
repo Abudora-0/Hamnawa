@@ -35,7 +35,9 @@ function Upload() {
   const [language, setLanguage] = useState("auto");
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const controllerRef = useRef(null);
+  const fileInputRef = useRef(null);
   const isMountedRef = useRef(true);
+  const [isDragging, setIsDragging] = useState(false);
   const { setDocument } = useDocument();
   const { announce } = useAnnouncer();
   const navigate = useNavigate();
@@ -48,8 +50,29 @@ function Upload() {
   }, []);
 
   function handleFileChange(event) {
-    setFile(event.target.files[0] || null);
+    const selectedFile = event.target.files[0] || null;
+    setFile(selectedFile);
     setError("");
+    if (selectedFile) {
+      announce(`File selected: ${selectedFile.name}`);
+    }
+  }
+
+  function handleDrop(event) {
+    event.preventDefault();
+    setIsDragging(false);
+    const droppedFile = event.dataTransfer.files[0] || null;
+    if (!droppedFile) {
+      return;
+    }
+    setFile(droppedFile);
+    setError("");
+    if (fileInputRef.current) {
+      const transfer = new DataTransfer();
+      transfer.items.add(droppedFile);
+      fileInputRef.current.files = transfer.files;
+    }
+    announce(`File selected: ${droppedFile.name}`);
   }
 
   async function handleSubmit(event) {
@@ -122,51 +145,83 @@ function Upload() {
   }
 
   return (
-    <section>
+    <section className="upload-page">
       <h1>Upload</h1>
       <p>Upload a PDF or slide deck to begin.</p>
-      <p className="notice">
-        Your file is sent to our server to be processed. It is deleted after
-        24 hours or when you erase your data.
-      </p>
-      <form onSubmit={handleSubmit} noValidate>
-        <label htmlFor="document-file">Choose a document</label>
-        <p id="file-hint">PDF or PowerPoint, up to 20 MB</p>
-        <input
-          id="document-file"
-          type="file"
-          accept=".pdf,.pptx"
-          aria-describedby="file-hint"
-          aria-invalid={Boolean(error)}
-          onChange={handleFileChange}
-        />
-        <label htmlFor="document-language">Document language</label>
-        <select
-          id="document-language"
-          value={language}
-          onChange={(event) => setLanguage(event.target.value)}
-        >
-          <option value="auto">Auto</option>
-          <option value="en">English</option>
-          <option value="ur">Urdu</option>
-        </select>
-        {error && (
-          <p className="error-message" role="alert">
-            {error}
-          </p>
-        )}
-        <button type="submit" aria-disabled={isUploading}>
-          {isUploading ? "Processing your document, please wait" : "Upload and process"}
-        </button>
-        {isUploading ? (
-          <p>Processing: {elapsedSeconds} seconds</p>
-        ) : null}
-      </form>
-      <button type="button" onClick={loadSample} aria-disabled={isUploading}>
+      <div className="upload-layout">
+        <form className="panel upload-form" onSubmit={handleSubmit} noValidate>
+          <div
+            className={`drop-zone${isDragging ? " is-dragging" : ""}`}
+            onDragOver={(event) => {
+              event.preventDefault();
+              setIsDragging(true);
+            }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={handleDrop}
+          >
+            <label htmlFor="document-file">Choose a document</label>
+            <p id="file-hint">PDF or PowerPoint, up to 20 MB</p>
+            <input
+              ref={fileInputRef}
+              id="document-file"
+              type="file"
+              accept=".pdf,.pptx"
+              aria-describedby="file-hint"
+              aria-invalid={Boolean(error)}
+              onChange={handleFileChange}
+            />
+            <p>or drop a file here</p>
+          </div>
+          {file ? (
+            <div className="file-ticket">
+              <strong>{file.name}</strong>
+              <span className="tag">{file.name.split(".").pop()}</span>
+              <span>{formatFileSize(file.size)}</span>
+            </div>
+          ) : null}
+          <div className="upload-actions">
+            <label htmlFor="document-language">Document language</label>
+            <select
+              id="document-language"
+              value={language}
+              onChange={(event) => setLanguage(event.target.value)}
+            >
+              <option value="auto">Auto</option>
+              <option value="en">English</option>
+              <option value="ur">Urdu</option>
+            </select>
+            <button className="btn" type="submit" aria-disabled={isUploading}>
+              {isUploading ? (
+                <>
+                  <span className="thread thread-loading" aria-hidden="true" />
+                  <span>Processing</span>
+                </>
+              ) : "Upload and process"}
+            </button>
+          </div>
+          {isUploading ? <p>Processing: {elapsedSeconds} seconds</p> : null}
+          {error && <p className="error-message" role="alert">{error}</p>}
+        </form>
+        <aside className="panel privacy-note">
+          <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M6 10V7a6 6 0 0 1 12 0v3M5 10h14v11H5z" fill="none" stroke="currentColor" strokeWidth="2" />
+          </svg>
+          <h2>Private by default</h2>
+          <p>Your file is sent to our server to be processed. It is deleted after 24 hours or when you erase your data.</p>
+        </aside>
+      </div>
+      <button className="btn-ghost" id="sample" type="button" onClick={loadSample} aria-disabled={isUploading}>
         Try the sample document
       </button>
     </section>
   );
+}
+
+function formatFileSize(bytes) {
+  if (bytes < 1024 * 1024) {
+    return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  }
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 export default Upload;
