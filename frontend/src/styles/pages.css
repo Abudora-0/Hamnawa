@@ -1,0 +1,62 @@
+main {
+  max-width: 70rem;
+  min-height: 60vh;
+  margin: 0 auto;
+  padding: var(--space-7) 5%;
+}
+
+main:focus { outline: none; }
+.reader-controls { margin: 1.5rem 0; }
+.reader-tools details { margin: 1rem 0; padding: 0.5rem 0.75rem; border: 2px solid var(--border); }
+.reader-tools summary { cursor: pointer; font-weight: bold; }
+.document-outline { padding-left: 1.25rem; }
+.document-outline ul { padding-left: 1.25rem; }
+.document-outline button { margin: 0.2rem 0; }
+.reader-tools form { margin: 1rem 0; }
+.reader-controls [role="group"] { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.speak-actions,
+.quick-phrases,
+.add-phrase,
+.speak-history li { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.speak-status { min-height: 1.6em; font-weight: bold; }
+.quick-phrases { align-items: stretch; }
+.quick-phrase { display: flex; flex-direction: column; gap: 0.25rem; }
+.quick-phrase button:first-child { flex: 1; }
+.speak-history { padding-left: 1.5rem; }
+.speak-history li { justify-content: space-between; margin: 0.5rem 0; }
+.error-message { padding: 0.5rem 0.75rem; border: 2px solid var(--border); color: var(--text); font-weight: bold; }
+.error-message::before { content: "Error: "; }
+.notice { padding: 0.5rem 0.75rem; border: 2px dashed var(--border); }
+
+@media (prefers-reduced-motion: no-preference) {
+  main > * { animation: page-enter 450ms var(--ease) both; }
+  main > *:nth-child(1) { --i: 0; }
+  main > *:nth-child(2) { --i: 1; }
+  main > *:nth-child(3) { --i: 2; }
+  main > *:nth-child(4) { --i: 3; }
+  main > *:nth-child(5) { --i: 4; }
+  main > *:nth-child(6) { --i: 5; }
+  @keyframes page-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+}
+
+:root[data-motion="reduced"] *,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+
+:root[data-theme="contrast"] .site-header,
+:root[data-theme="contrast"] .site-footer,
+:root[data-theme="contrast"] fieldset,
+:root[data-theme="contrast"] .panel,
+:root[data-theme="contrast"] .reader-tools details { border-width: 3px; }
+
+@media (max-width: 40rem) {
+  main { padding: var(--space-5) 3%; }
+  .reader-tools form,
+  .add-phrase { align-items: stretch; flex-direction: column; }
+  .reader-tools input,
+  .add-phrase input,
+  .reader-tools button,
+  .add-phrase button { width: 100%; margin-right: 0; }
+  .speak-history li { align-items: flex-start; flex-direction: column; }
+  table { display: block; max-width: 100%; overflow-x: auto; }
+}

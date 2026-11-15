@@ -1,0 +1,130 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background-color: var(--background);
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--text) 7%, transparent) 1px, transparent 1px);
+  background-size: 1rem 1rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+:root[data-theme="contrast"] body { background-image: none; }
+
+body,
+button,
+input,
+textarea,
+select { font-family: "Atkinson Hyperlegible", Arial, sans-serif; }
+
+h1,
+h2,
+h3 { font-family: "Bricolage Grotesque", Arial, sans-serif; letter-spacing: -0.03em; text-wrap: balance; }
+
+a { color: var(--link); }
+
+button,
+input,
+textarea,
+select { font: inherit; }
+
+button,
+a,
+input,
+textarea,
+select {
+  outline: 3px solid transparent;
+  outline-offset: 3px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible { outline-color: var(--focus); }
+
+button:disabled,
+button[aria-disabled="true"] { cursor: not-allowed; opacity: 0.7; }
+
+textarea,
+select {
+  max-width: 100%;
+  margin: 0.35rem 0 1rem;
+  padding: 0.6rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-petal);
+  background: var(--surface);
+  color: var(--text);
+}
+
+textarea { width: 100%; }
+
+input[type="file"]::file-selector-button {
+  padding: 0.6rem 0.9rem;
+  border: 2px solid var(--text);
+  border-radius: 0.75rem;
+  background: var(--accent);
+  color: var(--on-accent);
+  cursor: pointer;
+}
+
+input[type="range"] { accent-color: var(--accent); min-height: 2.75rem; }
+
+input[type="checkbox"],
+input[type="radio"] { accent-color: var(--accent); }
+
+fieldset {
+  margin: 1.5rem 0;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-petal);
+  background: var(--surface);
+}
+
+fieldset label { display: block; margin: 0.75rem 0; }
+
+table { border-collapse: collapse; margin: 1rem 0; }
+th,
+td { border: 2px solid var(--border); padding: 0.5rem 0.75rem; text-align: left; }
+
+.current {
+  background: var(--highlight-bg);
+  color: var(--highlight-text);
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  padding: 0.15rem;
+}
+
+.live-region {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+[lang="ur"] {
+  font-family: "Noto Nastaliq Urdu", "Noto Sans Arabic", serif;
+  line-height: 2.1;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--accent-2);
+  border-radius: 999px;
+  color: var(--accent-2);
+  font-size: var(--text--1);
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+kbd {
+  padding: 0.1rem 0.4rem;
+  border: 2px solid var(--border);
+  border-bottom-width: 4px;
+  border-radius: 0.25rem;
+  background: var(--surface);
+}
+
