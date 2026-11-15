@@ -1,6 +1,9 @@
 .btn,
 .button-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   min-height: 2.75rem;
   padding: 0.6rem 0.9rem;
   border: 2px solid var(--text);
@@ -19,6 +22,10 @@
 .button-link:active { transform: translate(4px, 4px); box-shadow: none; }
 
 .btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   min-height: 2.75rem;
   padding: 0.6rem 0.9rem;
   border: 2px solid var(--border);
@@ -40,7 +47,7 @@
 }
 
 .link:hover { text-decoration-thickness: 4px; }
-.link-arrow::after { content: " ->"; display: inline-block; transition: transform var(--duration-fast) var(--ease); }
+.link-arrow::after { content: "\2192" / ""; display: inline-block; transition: transform var(--duration-fast) var(--ease); }
 .link-arrow:hover::after { transform: translateX(3px); }
 
 .panel {
@@ -54,8 +61,8 @@
   display: block;
   height: 0.6rem;
   background: var(--accent-2);
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='12' viewBox='0 0 120 12'%3E%3Cpath d='M0 6c10-8 20 8 30 0s20-8 30 0 20 8 30 0 20-8 30 0' fill='none' stroke='black' stroke-width='3'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='12' viewBox='0 0 120 12'%3E%3Cpath d='M0 6c10-8 20 8 30 0s20-8 30 0 20 8 30 0 20-8 30 0' fill='none' stroke='black' stroke-width='3'/%3E%3C/svg%3E");
+  -webkit-mask-image: var(--thread-mask);
+  mask-image: var(--thread-mask);
 }
 
 .thread-under { width: 8rem; margin: 0.2rem 0 1rem; }
@@ -89,14 +96,28 @@
 }
 
 .site-footer p { margin: 0; }
-.brand { color: var(--text); font-family: "Bricolage Grotesque", Arial, sans-serif; font-size: var(--text-2); font-weight: 800; text-decoration: none; }
+.brand { color: var(--text); font-family: var(--font-heading); font-size: var(--text-2); font-weight: 800; text-decoration: none; }
 .brand-urdu { margin-left: var(--space-2); color: var(--accent-2); font-size: var(--text-1); }
 .nav-list,
 .footer-links { display: flex; flex-wrap: wrap; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
 .nav-list a { display: block; padding: 0.5rem 0.75rem; color: var(--text); text-decoration: none; }
-.nav-list a:hover,
-.nav-list a.active { text-decoration: underline; text-decoration-color: var(--accent-2); text-decoration-thickness: 3px; text-underline-offset: 0.5rem; }
-.toast { position: fixed; bottom: 1rem; left: 1rem; z-index: 3; max-width: min(24rem, calc(100vw - 2rem)); }
+.nav-list a { position: relative; }
+.nav-list a::after {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0;
+  left: 0.75rem;
+  height: 0.5rem;
+  background: var(--accent-2);
+  content: "";
+  opacity: 0;
+  -webkit-mask: var(--thread-mask);
+  mask: var(--thread-mask);
+  transition: opacity var(--duration-normal) var(--ease);
+}
+.nav-list a:hover::after,
+.nav-list a.active::after { opacity: 1; }
+.toast { position: fixed; top: 1rem; right: 1rem; z-index: 3; max-width: min(24rem, calc(100vw - 2rem)); }
 
 @media (max-width: 40rem) {
   .site-header,
