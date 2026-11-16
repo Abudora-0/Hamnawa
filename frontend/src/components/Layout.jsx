@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import SkipLink from "./SkipLink";
+import Logo from "./Logo";
+import Footer from "./Footer";
 import { useAnnouncer } from "../context/AnnouncementContext";
 import { useSettings } from "../context/SettingsContext";
 
@@ -18,10 +20,25 @@ function Layout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
   const mainRef = useRef(null);
+  const headerSentinelRef = useRef(null);
   const hasRendered = useRef(false);
   const { announcement } = useAnnouncer();
   const { screenReaderMode } = useSettings();
   const [toastAnnouncement, setToastAnnouncement] = useState("");
+  const [isHeaderCompact, setIsHeaderCompact] = useState(false);
+
+  useEffect(() => {
+    if (!headerSentinelRef.current || !("IntersectionObserver" in window)) {
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsHeaderCompact(!entry.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(headerSentinelRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     function handleHelpShortcut(event) {
@@ -74,10 +91,9 @@ function Layout({ children }) {
   return (
     <>
       <SkipLink />
-      <header className="site-header">
-        <Link className="brand" to="/" aria-label="Hamnawa home">
-          Hamnawa <span className="brand-urdu" lang="ur">ہم نوا</span>
-        </Link>
+      <span className="header-sentinel" ref={headerSentinelRef} aria-hidden="true" />
+      <header className={`site-header${isHeaderCompact ? " is-compact" : ""}`}>
+        <Logo />
         <Navbar />
       </header>
       <main id="main" ref={mainRef} tabIndex={-1}>
@@ -91,16 +107,7 @@ function Layout({ children }) {
           {toastAnnouncement}
         </div>
       ) : null}
-      <footer className="site-footer">
-        <p>Hamnawa. Made so every student can listen.</p>
-        <nav aria-label="Footer navigation">
-          <ul className="footer-links">
-            <li><Link className="link" to="/help">Help</Link></li>
-            <li><Link className="link" to="/settings">Settings</Link></li>
-          </ul>
-        </nav>
-        <p>Documents are deleted from the server after 24 hours.</p>
-      </footer>
+      <Footer />
     </>
   );
 }

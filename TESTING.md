@@ -22,6 +22,15 @@
   animation runs and no content is hidden.
 - Check the Urdu reader sample and Urdu wordmark for Nastaliq font, right to
   left alignment, and line height.
+- Check the sticky header's compact state after scrolling, including its
+  bottom shadow and anchor spacing.
+- At mobile widths, verify the menu button announces its state, closed links
+  are not tabbable, Escape returns focus to the button, and route changes close
+  the menu.
+- Cycle the theme button through light, dark, and high contrast and verify its
+  label and announcement describe the next theme.
+- Check the footer landmarks, Explore and Support link groups, privacy card,
+  Back to top button, and stacked mobile layout.
 
 ## Controls
 
