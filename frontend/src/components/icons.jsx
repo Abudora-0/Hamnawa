@@ -52,6 +52,10 @@ export function MenuIcon({ open }) {
   return <Icon><path d={open ? "M5 5l14 14M19 5 5 19" : "M4 7h16M4 12h16M4 17h16"} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></Icon>;
 }
 
+export function PlayIcon() {
+  return <svg className="play-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="18" height="18"><path d="m8 5 11 7-11 7V5Z" fill="currentColor" /></svg>;
+}
+
 export function WaveMark() {
   return <svg aria-hidden="true" className="logo-mark" viewBox="0 0 40 40" focusable="false"><rect x="2" y="2" width="36" height="36" rx="9" fill="var(--accent)" /><path d="M7 21c4-8 7 8 11 0s7-8 11 0 5 5 6 1" fill="none" stroke="var(--on-accent)" strokeWidth="3" strokeLinecap="round" /></svg>;
 }

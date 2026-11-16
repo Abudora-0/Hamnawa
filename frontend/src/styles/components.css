@@ -181,6 +181,7 @@
 .footer-grid nav a:hover { color: var(--accent); text-decoration: underline; }
 .footer-brand { padding-top: var(--space-5); }
 .footer-brand p { margin-top: var(--space-3); }
+.footer-brand [lang="ur"] { text-align: left; }
 .privacy-card { align-self: start; margin-top: var(--space-5); padding: var(--space-4); }
 .privacy-card h2 { margin-top: 0; }
 .privacy-card p { margin-bottom: var(--space-3); }

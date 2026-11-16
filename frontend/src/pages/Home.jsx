@@ -7,6 +7,7 @@ import useReveal from "../hooks/useReveal";
 import { sampleDocument } from "../services/mockData";
 import { getRecent } from "../utils/documentMemory";
 import { relativeTime } from "../utils/relativeTime";
+import { PlayIcon } from "../components/icons";
 
 function RevealSection({ children, className = "" }) {
   const reveal = useReveal();
@@ -37,7 +38,7 @@ function Home() {
     <section className="home-page">
       <section className="home-hero">
         <div className="hero-copy-column">
-          <p className="eyebrow">01 / Study with your ears</p>
+          <p className="eyebrow"><span aria-hidden="true">01 / </span>Study with your ears</p>
           <h1>
             Study material that <span className="wave-underline">speaks</span>{" "}
             your way.
@@ -52,17 +53,17 @@ function Home() {
               Try the sample
             </button>
           </div>
-          <div className="hero-chips" aria-label="Hamnawa features">
-            <span>PDF and PPTX</span>
-            <span>English and Urdu</span>
-            <span>Deleted after 24 hours</span>
-          </div>
+          <ul className="hero-chips" aria-label="Hamnawa features">
+            <li>PDF and PPTX</li>
+            <li>English and Urdu</li>
+            <li>Deleted after 24 hours</li>
+          </ul>
         </div>
         <HeroArt />
       </section>
 
       <RevealSection className="home-band">
-        <p className="eyebrow">02 / A simple rhythm</p>
+        <p className="eyebrow"><span aria-hidden="true">02 / </span>A simple rhythm</p>
         <h2>How it works</h2>
         <span className="thread thread-under" aria-hidden="true" />
         <ol className="steps-list">
@@ -82,7 +83,7 @@ function Home() {
       </RevealSection>
 
       <RevealSection className="home-band">
-        <p className="eyebrow">03 / Built around you</p>
+        <p className="eyebrow"><span aria-hidden="true">03 / </span>Built around you</p>
         <h2>Made for listening</h2>
         <span className="thread thread-under" aria-hidden="true" />
         <div className="feature-bento">
@@ -116,7 +117,7 @@ function Home() {
 
       <RevealSection className="home-band action-preview-band">
         <div>
-          <p className="eyebrow">04 / See it in action</p>
+          <p className="eyebrow"><span aria-hidden="true">04 / </span>See it in action</p>
           <h2>A reader that keeps your place.</h2>
           <span className="thread thread-under" aria-hidden="true" />
           <p>Follow a highlighted sentence, change the speed, and move between sections without losing your focus.</p>
@@ -124,7 +125,7 @@ function Home() {
         </div>
         <div className="reader-preview" aria-hidden="true">
           <div className="preview-title">Introduction to Software Engineering <span className="tag">PDF</span></div>
-          <div className="preview-player"><span className="hero-play">▶</span><span className="preview-bars"><i /><i /><i /><i /><i /></span><span>01:24</span></div>
+          <div className="preview-player"><span className="hero-play"><PlayIcon /></span><span className="preview-bars"><i /><i /><i /><i /><i /></span><span>01:24</span></div>
           <p>Software engineering builds useful software through an organized process.</p>
           <p className="preview-highlight">Good software is reliable, usable, and easy to maintain.</p>
         </div>
@@ -132,7 +133,7 @@ function Home() {
 
       {recentDocuments.length ? (
         <RevealSection className="home-band">
-          <p className="eyebrow">05 / Pick up where you left off</p>
+          <p className="eyebrow"><span aria-hidden="true">05 / </span>Pick up where you left off</p>
           <h2>Recent documents</h2>
           <span className="thread thread-under" aria-hidden="true" />
           <ul className="recent-list">
@@ -151,7 +152,7 @@ function Home() {
       ) : null}
 
       <RevealSection className="home-band faq-band">
-        <p className="eyebrow">06 / Questions, answered</p>
+        <p className="eyebrow"><span aria-hidden="true">06 / </span>Questions, answered</p>
         <h2>Good to know</h2>
         <span className="thread thread-under" aria-hidden="true" />
         <details>
@@ -173,7 +174,7 @@ function Home() {
       </RevealSection>
 
       <section className="closing-band">
-        <p className="eyebrow">07 / Start your thread</p>
+        <p className="eyebrow"><span aria-hidden="true">07 / </span>Start your thread</p>
         <h2>Make your next study session easier to hear.</h2>
         <div className="hero-actions">
           <Link className="button-link" to="/upload">Upload a document</Link>

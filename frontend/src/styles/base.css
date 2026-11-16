@@ -322,6 +322,7 @@ kbd {
   border-bottom-width: 4px;
   border-radius: 0.25rem;
   background: var(--surface);
+  color: var(--text);
   box-shadow: 0 2px 0 var(--border);
 }
 

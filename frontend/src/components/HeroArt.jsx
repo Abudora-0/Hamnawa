@@ -1,3 +1,5 @@
+import { PlayIcon } from "./icons";
+
 function HeroArt() {
   return (
     <div className="hero-art" aria-hidden="true">
@@ -15,7 +17,7 @@ function HeroArt() {
         <span className="sheet-line sheet-line-short" />
       </div>
       <div className="player-pill">
-        <span className="hero-play">▶</span>
+        <span className="hero-play"><PlayIcon /></span>
         <span className="hero-waveform">
           <i /><i /><i /><i /><i /><i /><i />
         </span>
