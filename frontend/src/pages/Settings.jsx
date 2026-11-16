@@ -6,6 +6,7 @@ import { useDocument } from "../context/DocumentContext";
 import { useAnnouncer } from "../context/AnnouncementContext";
 import { deleteDocument } from "../services/api";
 import { eraseAll, getRecent } from "../utils/documentMemory";
+import PageHeader from "../components/PageHeader";
 
 const themes = [
   { value: "light", label: "Light" },
@@ -82,12 +83,25 @@ function Settings() {
   }
 
   return (
-    <section>
-      <h1>Settings</h1>
-      <fieldset>
-        <legend>Theme</legend>
+    <section className="settings-page">
+      <PageHeader
+        eyebrow="Settings / Make it yours"
+        title="Settings"
+        description="Tune the display, speech, keyboard, and saved data to your study style."
+      />
+      <div className="settings-layout">
+        <nav className="settings-menu panel" aria-label="Settings sections">
+          <a href="#display">Display</a>
+          <a href="#speech">Speech</a>
+          <a href="#keyboard">Keyboard</a>
+          <a href="#saved-data">Saved data</a>
+        </nav>
+        <div className="settings-content">
+      <fieldset className="settings-group panel">
+        <legend id="display">Display</legend>
+        <div className="theme-tiles">
         {themes.map((option) => (
-          <label key={option.value}>
+          <label className="theme-tile" key={option.value}>
             <input
               type="radio"
               name="theme"
@@ -95,13 +109,14 @@ function Settings() {
               checked={theme === option.value}
               onChange={(event) => setTheme(event.target.value)}
             />
-            {option.label}
+            <span className={`theme-preview theme-${option.value}`} aria-hidden="true">
+              <span>Aa</span><i />
+            </span>
+            <strong>{option.label}</strong>
           </label>
         ))}
-      </fieldset>
-      <fieldset>
-        <legend>Motion</legend>
-        <label>
+        </div>
+        <label className="switch-row">
           <input
             type="checkbox"
             checked={reduceMotion}
@@ -109,8 +124,23 @@ function Settings() {
           />
           Reduce animations
         </label>
+        <div className="font-tiles">
+        {fontSizes.map((option) => (
+          <label className="font-tile" key={option.value}>
+            <input
+              type="radio"
+              name="font-size"
+              value={option.value}
+              checked={fontSize === option.value}
+              onChange={(event) => setFontSize(event.target.value)}
+            />
+            <span aria-hidden="true" className={`font-sample font-${option.value}`}>Aa</span>
+            <strong>{option.label}</strong>
+          </label>
+        ))}
+        </div>
       </fieldset>
-      <fieldset>
+      <fieldset className="settings-group panel" id="saved-data">
         <legend>Saved data</legend>
         {!confirmErase ? (
           <button
@@ -126,21 +156,22 @@ function Settings() {
               This removes recent documents, saved progress, bookmarks, quick
               phrases, and speech history. Your display and voice settings stay.
             </p>
-            <button type="button" onClick={eraseSavedData}>
+            <button className="btn" type="button" onClick={eraseSavedData}>
               Yes, erase
             </button>
-            <button type="button" onClick={() => setConfirmErase(false)}>
+            <button className="btn-ghost" type="button" onClick={() => setConfirmErase(false)}>
               Cancel
             </button>
           </div>
         )}
       </fieldset>
-      <fieldset>
+      <fieldset className="settings-group panel" id="speech">
         <legend>Speech</legend>
         {speech.isSupported() ? (
           <>
-            <fieldset>
+            <fieldset className="nested-group">
               <legend>Voice engine</legend>
+              <div className="segmented-control">
               <label>
                 <input
                   type="radio"
@@ -149,7 +180,7 @@ function Settings() {
                   checked={voiceEngine === "device"}
                   onChange={(event) => setVoiceEngine(event.target.value)}
                 />
-                Device voice (works offline)
+                <span>Device voice (works offline)</span>
               </label>
               <label>
                 <input
@@ -159,11 +190,12 @@ function Settings() {
                   checked={voiceEngine === "cloud"}
                   onChange={(event) => setVoiceEngine(event.target.value)}
                 />
-                Cloud voice (clearer Urdu, needs internet)
+                <span>Cloud voice (clearer Urdu, needs internet)</span>
               </label>
+              </div>
             </fieldset>
-            <label htmlFor="speech-rate">
-              Speech speed: {speechRate}x
+            <label className="range-label" htmlFor="speech-rate">
+              <span>Speech speed</span><strong>{speechRate}x</strong>
             </label>
             <input
               id="speech-rate"
@@ -192,7 +224,7 @@ function Settings() {
                 </select>
               </>
             ) : null}
-            <label>
+            <label className="switch-row">
               <input
                 type="checkbox"
                 checked={cuesEnabled}
@@ -200,7 +232,7 @@ function Settings() {
               />
               Announce headings and lists
             </label>
-            <label>
+            <label className="switch-row">
               <input
                 type="checkbox"
                 checked={continuousReading}
@@ -208,7 +240,7 @@ function Settings() {
               />
               Keep reading into the next section
             </label>
-            <button type="button" onClick={testVoice}>
+            <button className="btn-ghost" type="button" onClick={testVoice}>
               Test voice
             </button>
           </>
@@ -216,24 +248,9 @@ function Settings() {
           <p>Speech is not supported in this browser.</p>
         )}
       </fieldset>
-      <fieldset>
-        <legend>Font size</legend>
-        {fontSizes.map((option) => (
-          <label key={option.value}>
-            <input
-              type="radio"
-              name="font-size"
-              value={option.value}
-              checked={fontSize === option.value}
-              onChange={(event) => setFontSize(event.target.value)}
-            />
-            {option.label}
-          </label>
-        ))}
-      </fieldset>
-      <fieldset>
+      <fieldset className="settings-group panel" id="keyboard">
         <legend>Keyboard</legend>
-        <label>
+        <label className="switch-row">
           <input
             type="checkbox"
             checked={screenReaderMode}
@@ -245,6 +262,8 @@ function Settings() {
           This avoids clashes with screen reader keys.
         </p>
       </fieldset>
+        </div>
+      </div>
     </section>
   );
 }

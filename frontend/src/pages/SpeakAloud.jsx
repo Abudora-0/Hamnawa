@@ -3,6 +3,7 @@ import { useSpeaker } from "../hooks/useSpeaker";
 import { useAnnouncer } from "../context/AnnouncementContext";
 import { getJSON, setJSON } from "../utils/storage";
 import { speech } from "../services/speech";
+import PageHeader from "../components/PageHeader";
 
 const QUICK_PHRASES_KEY = "hamnawa-quick-phrases";
 const SPEAK_HISTORY_KEY = "hamnawa-speak-history";
@@ -96,7 +97,11 @@ function SpeakAloud() {
   if (!speech.isSupported()) {
     return (
       <section>
-        <h1>Speak Aloud</h1>
+        <PageHeader
+          eyebrow="Speak Aloud / Hands free"
+          title="Speak Aloud"
+          description="Type a message for Hamnawa to say out loud."
+        />
         <p role="alert">
           Speech is not supported in this browser. You can still type and use
           the other accessibility features.
@@ -107,8 +112,11 @@ function SpeakAloud() {
 
   return (
     <section className="speak-page">
-      <h1>Speak Aloud</h1>
-      <p>Type a message for Hamnawa to say out loud.</p>
+      <PageHeader
+        eyebrow="Speak Aloud / Hands free"
+        title="Speak Aloud"
+        description="Type a message for Hamnawa to say out loud."
+      />
       <form className="speak-form panel" onSubmit={handleSubmit}>
         <label htmlFor="speak-text">Type what you want to say</label>
         <textarea

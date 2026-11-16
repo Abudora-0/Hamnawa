@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import PageHeader from "../components/PageHeader";
 import { useAnnouncer } from "../context/AnnouncementContext";
 import { useDocument } from "../context/DocumentContext";
 import { sampleDocument } from "../services/mockData";
@@ -34,6 +35,7 @@ function Upload() {
   const [isUploading, setIsUploading] = useState(false);
   const [language, setLanguage] = useState("auto");
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [uploadStage, setUploadStage] = useState("choose");
   const controllerRef = useRef(null);
   const fileInputRef = useRef(null);
   const isMountedRef = useRef(true);
@@ -53,6 +55,7 @@ function Upload() {
     const selectedFile = event.target.files[0] || null;
     setFile(selectedFile);
     setError("");
+    setUploadStage("choose");
     if (selectedFile) {
       announce(`File selected: ${selectedFile.name}`);
     }
@@ -67,6 +70,7 @@ function Upload() {
     }
     setFile(droppedFile);
     setError("");
+    setUploadStage("choose");
     if (fileInputRef.current) {
       const transfer = new DataTransfer();
       transfer.items.add(droppedFile);
@@ -88,6 +92,7 @@ function Upload() {
     }
 
     setIsUploading(true);
+    setUploadStage("process");
     setElapsedSeconds(0);
     announce("Processing your document, please wait");
     const controller = new AbortController();
@@ -112,6 +117,7 @@ function Upload() {
         controller.signal,
       );
       setDocument(uploadedDocument);
+      setUploadStage("listen");
       announce(`Document ready. ${uploadedDocument.sections.length} sections found.`);
       navigate(`/reader/${uploadedDocument.id}`);
     } catch (uploadError) {
@@ -144,10 +150,41 @@ function Upload() {
     navigate(`/reader/${sampleDocument.id}`);
   }
 
+  function removeFile() {
+    setFile(null);
+    setError("");
+    setUploadStage("choose");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+      fileInputRef.current.focus();
+    }
+  }
+
+  const stages = [
+    { key: "choose", label: "Choose" },
+    { key: "process", label: "Process" },
+    { key: "listen", label: "Listen" },
+  ];
+  const currentStageIndex = stages.findIndex((stage) => stage.key === uploadStage);
+
   return (
     <section className="upload-page">
-      <h1>Upload</h1>
-      <p>Upload a PDF or slide deck to begin.</p>
+      <PageHeader
+        eyebrow="Upload / Start here"
+        title="Upload"
+        description="Upload a PDF or slide deck to begin."
+      />
+      <ol className="upload-steps" aria-label="Upload progress">
+        {stages.map((stage, index) => (
+          <li
+            className={`upload-step${index === currentStageIndex ? " is-current" : ""}${index < currentStageIndex ? " is-complete" : ""}`}
+            key={stage.key}
+            aria-current={index === currentStageIndex ? "step" : undefined}
+          >
+            {stage.label}
+          </li>
+        ))}
+      </ol>
       <div className="upload-layout">
         <form className="panel upload-form" onSubmit={handleSubmit} noValidate>
           <div
@@ -159,6 +196,9 @@ function Upload() {
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleDrop}
           >
+            <svg className="drop-icon" aria-hidden="true" viewBox="0 0 48 48">
+              <path d="M24 33V8m0 0L14 18m10-10 10 10M9 29v10h30V29" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
             <label htmlFor="document-file">Choose a document</label>
             <p id="file-hint">PDF or PowerPoint, up to 20 MB</p>
             <input
@@ -177,6 +217,9 @@ function Upload() {
               <strong>{file.name}</strong>
               <span className="tag">{file.name.split(".").pop()}</span>
               <span>{formatFileSize(file.size)}</span>
+              <button className="btn-ghost" type="button" onClick={removeFile}>
+                Remove
+              </button>
             </div>
           ) : null}
           <div className="upload-actions">
@@ -202,12 +245,14 @@ function Upload() {
           {isUploading ? <p>Processing: {elapsedSeconds} seconds</p> : null}
           {error && <p className="error-message" role="alert">{error}</p>}
         </form>
-        <aside className="panel privacy-note">
-          <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24">
-            <path d="M6 10V7a6 6 0 0 1 12 0v3M5 10h14v11H5z" fill="none" stroke="currentColor" strokeWidth="2" />
-          </svg>
-          <h2>Private by default</h2>
-          <p>Your file is sent to our server to be processed. It is deleted after 24 hours or when you erase your data.</p>
+        <aside className="panel upload-tips">
+          <h2>Tips</h2>
+          <ul>
+            <li>Supported files: PDF and PPTX.</li>
+            <li>Keep files at 20 MB or smaller.</li>
+            <li>Scanned files may take longer to read.</li>
+          </ul>
+          <p className="privacy-note">Your file is deleted after 24 hours or when you erase your data.</p>
         </aside>
       </div>
       <button className="btn-ghost" id="sample" type="button" onClick={loadSample} aria-disabled={isUploading}>

@@ -1,5 +1,6 @@
 import { getShortcutLabel, getShortcuts } from "../utils/shortcuts";
 import { useSettings } from "../context/SettingsContext";
+import PageHeader from "../components/PageHeader";
 
 const voiceCommands = [
   "play",
@@ -22,7 +23,11 @@ function Help() {
 
   return (
     <section className="help-page">
-      <h1>Help</h1>
+      <PageHeader
+        eyebrow="Help / Find your way"
+        title="Help"
+        description="Short guides for reading, listening, and finding your way around Hamnawa."
+      />
       <div className="help-layout">
         <nav className="help-contents panel" aria-label="Help contents">
           <strong>On this page</strong>
