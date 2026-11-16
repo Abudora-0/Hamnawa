@@ -35,6 +35,7 @@ function Reader() {
   const { start, stop } = useBusy();
   const [loadingId, setLoadingId] = useState("");
   const [error, setError] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
   const [bookmarks, setBookmarks] = useState([]);
   const requestedId = useRef("");
   const restoredDocumentId = useRef("");
@@ -67,7 +68,7 @@ function Reader() {
         setLoadingId("");
       })
       .finally(() => stop(busyOperation));
-  }, [contextDocument, id, setDocument, start, stop]);
+  }, [contextDocument, id, retryCount, setDocument, start, stop]);
 
   const items = useMemo(
     () => (currentDocument ? buildQueue(currentDocument, cuesEnabled) : []),
@@ -155,6 +156,7 @@ function Reader() {
   function retryLoad() {
     requestedId.current = "";
     setError("");
+    setRetryCount((count) => count + 1);
   }
 
   const voiceActions = {
@@ -191,6 +193,7 @@ function Reader() {
     return (
       <section>
         <EmptyState
+          headingLevel={1}
           title="We could not open this document"
           description={error}
           action={<button className="btn" type="button" onClick={retryLoad}>Try again</button>}
@@ -201,13 +204,14 @@ function Reader() {
   }
 
   if (loadingId === id) {
-    return <div className="reader-loading" role="status"><span className="live-region">Loading document</span><Skeleton /></div>;
+    return <div className="reader-loading" role="status"><h1 className="live-region">Loading document</h1><Skeleton /></div>;
   }
 
   if (!currentDocument) {
     return (
       <section>
         <EmptyState
+          headingLevel={1}
           title="Your reader is waiting"
           description="Upload a document to start reading and listening."
           action={<Link className="btn" to="/upload">Upload a document</Link>}

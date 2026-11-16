@@ -6,6 +6,7 @@ function NotFound() {
   usePageTitle("Page not found");
   return (
     <EmptyState
+      headingLevel={1}
       title="This page is not here"
       description="The address may be wrong, or the page may have moved."
       action={<Link className="btn" to="/">Home</Link>}

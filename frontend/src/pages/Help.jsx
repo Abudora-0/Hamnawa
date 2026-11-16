@@ -1,6 +1,8 @@
 import { getShortcutLabel, getShortcuts } from "../utils/shortcuts";
 import { useSettings } from "../context/SettingsContext";
 import PageHeader from "../components/PageHeader";
+import { useLocation } from "react-router-dom";
+import useHashScroll from "../hooks/useHashScroll";
 
 const voiceCommands = [
   "play",
@@ -18,8 +20,10 @@ const voiceCommands = [
 ];
 
 function Help() {
+  const location = useLocation();
   const { screenReaderMode } = useSettings();
   const activeShortcuts = getShortcuts(screenReaderMode);
+  useHashScroll(location.hash);
 
   return (
     <section className="help-page">

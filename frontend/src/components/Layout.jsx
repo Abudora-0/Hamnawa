@@ -22,6 +22,7 @@ function Layout({ children }) {
   const navigate = useNavigate();
   const mainRef = useRef(null);
   const headerSentinelRef = useRef(null);
+  const hasRenderedRef = useRef(false);
   const { announcement } = useAnnouncer();
   const { screenReaderMode } = useSettings();
   const [toastAnnouncement, setToastAnnouncement] = useState("");
@@ -77,18 +78,13 @@ function Layout({ children }) {
       document.title = `${pageName} | Hamnawa`;
     }
 
-    if (location.hash) {
-      const target = document.getElementById(location.hash.slice(1));
-      if (target) {
-        if (!target.matches("a, button, input, select, textarea, summary, [tabindex]")) {
-          target.tabIndex = -1;
-        }
-        target.scrollIntoView({ behavior: "auto", block: "start" });
-        target.focus();
-      }
+    if (!hasRenderedRef.current) {
+      hasRenderedRef.current = true;
       return;
     }
-
+    if (location.hash) {
+      return;
+    }
     window.scrollTo({ top: 0, behavior: "auto" });
     mainRef.current?.focus();
   }, [location.pathname, location.hash]);

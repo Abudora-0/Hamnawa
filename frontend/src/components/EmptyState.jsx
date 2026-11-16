@@ -1,4 +1,5 @@
-function EmptyState({ title, description, action, secondaryAction }) {
+function EmptyState({ title, description, action, secondaryAction, headingLevel = 2 }) {
+  const Heading = `h${headingLevel}`;
   return (
     <div className="empty-state panel">
       <svg aria-hidden="true" viewBox="0 0 120 90">
@@ -6,7 +7,7 @@ function EmptyState({ title, description, action, secondaryAction }) {
         <path d="M60 25v49M30 39h14m-14 12h14m32-12h14m-14 12h14" fill="none" stroke="currentColor" strokeWidth="3" />
         <path d="M48 16c5-8 9 8 14 0s9-8 14 0" fill="none" stroke="var(--accent-2)" strokeWidth="4" />
       </svg>
-      <h2>{title}</h2>
+      <Heading>{title}</Heading>
       <p>{description}</p>
       <div className="empty-actions">
         {action}

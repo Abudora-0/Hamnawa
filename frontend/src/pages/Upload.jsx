@@ -127,8 +127,13 @@ function Upload() {
       navigate(`/reader/${uploadedDocument.id}`);
     } catch (uploadError) {
       if (uploadError.name === "AbortError" && !timedOut) {
+        if (isMountedRef.current) {
+          setUploadStage("choose");
+          announce("Upload cancelled");
+        }
         return;
       }
+      setUploadStage("choose");
       setError(
         timedOut
           ? "Processing took too long. Please try a smaller file."
@@ -254,7 +259,7 @@ function Upload() {
             </button>
           </div>
           {isUploading ? (
-            <div className="processing-panel panel" role="status">
+            <div className="processing-panel panel">
               <div className="processing-wave" aria-hidden="true"><i /><i /><i /><i /><i /></div>
               <strong>Reading your document.</strong>
               <p>Large files can take up to a minute.</p>
