@@ -170,7 +170,7 @@ main:focus { outline: none; }
 .saved-data { border-color: var(--accent); }
 .saved-data legend { color: var(--accent); }
 .help-layout { display: grid; grid-template-columns: minmax(12rem, 0.3fr) minmax(0, 1fr); align-items: start; gap: var(--space-7); }
-.help-contents { display: grid; position: sticky; top: var(--space-4); gap: var(--space-2); }
+.help-contents { display: grid; position: sticky; top: calc(var(--header-offset) + var(--space-3)); gap: var(--space-2); }
 .help-content { max-width: 48rem; }
 .help-content section { scroll-margin-top: var(--space-5); }
 .help-content details { margin: var(--space-3) 0; padding: var(--space-3) var(--space-4); border: 2px solid var(--border); border-radius: var(--radius-petal); background: var(--surface); }
@@ -235,7 +235,7 @@ main:focus { outline: none; }
 
 @media (min-width: 64rem) {
   .reader-layout { grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.35fr); }
-  .reader-tools { position: sticky; top: var(--space-4); max-height: calc(100vh - 2 * var(--space-4)); overflow-y: auto; }
+  .reader-tools { position: sticky; top: calc(var(--header-offset) + var(--space-3)); max-height: calc(100vh - var(--header-offset) - 2 * var(--space-3)); overflow-y: auto; }
 }
 
 :root[data-motion="reduced"] *,
@@ -270,6 +270,5 @@ main:focus { outline: none; }
   .reader-tools button,
   .add-phrase button { width: 100%; margin-right: 0; }
   .speak-history li { align-items: flex-start; flex-direction: column; }
-  table { display: block; max-width: 100%; overflow-x: auto; }
 }
 
