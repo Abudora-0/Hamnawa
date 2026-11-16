@@ -7,6 +7,8 @@ import { useAnnouncer } from "../context/AnnouncementContext";
 import { deleteDocument } from "../services/api";
 import { eraseAll, getRecent } from "../utils/documentMemory";
 import PageHeader from "../components/PageHeader";
+import { useLocation } from "react-router-dom";
+import useHashScroll from "../hooks/useHashScroll";
 
 const themes = [
   { value: "light", label: "Light" },
@@ -22,6 +24,7 @@ const fontSizes = [
 ];
 
 function Settings() {
+  const location = useLocation();
   const {
     theme,
     setTheme,
@@ -49,6 +52,7 @@ function Settings() {
   const explanationRef = useRef(null);
   const wasConfirmingRef = useRef(false);
   const voices = useVoices();
+  useHashScroll(location.hash);
 
   useEffect(() => {
     if (confirmErase) {
@@ -99,71 +103,55 @@ function Settings() {
         <div className="settings-content">
       <fieldset className="settings-group panel">
         <legend id="display">Display</legend>
-        <div className="theme-tiles">
-        {themes.map((option) => (
-          <label className="theme-tile" key={option.value}>
-            <input
-              type="radio"
-              name="theme"
-              value={option.value}
-              checked={theme === option.value}
-              onChange={(event) => setTheme(event.target.value)}
-            />
-            <span className={`theme-preview theme-${option.value}`} aria-hidden="true">
-              <span>Aa</span><i />
-            </span>
-            <strong>{option.label}</strong>
-          </label>
-        ))}
-        </div>
-        <label className="switch-row">
-          <input
-            type="checkbox"
-            checked={reduceMotion}
-            onChange={(event) => setReduceMotion(event.target.checked)}
-          />
-          Reduce animations
-        </label>
-        <div className="font-tiles">
-        {fontSizes.map((option) => (
-          <label className="font-tile" key={option.value}>
-            <input
-              type="radio"
-              name="font-size"
-              value={option.value}
-              checked={fontSize === option.value}
-              onChange={(event) => setFontSize(event.target.value)}
-            />
-            <span aria-hidden="true" className={`font-sample font-${option.value}`}>Aa</span>
-            <strong>{option.label}</strong>
-          </label>
-        ))}
-        </div>
-      </fieldset>
-      <fieldset className="settings-group panel" id="saved-data">
-        <legend>Saved data</legend>
-        {!confirmErase ? (
-          <button
-            type="button"
-            ref={eraseButtonRef}
-            onClick={() => setConfirmErase(true)}
-          >
-            Erase all saved data
-          </button>
-        ) : (
-          <div>
-            <p ref={explanationRef} tabIndex={-1}>
-              This removes recent documents, saved progress, bookmarks, quick
-              phrases, and speech history. Your display and voice settings stay.
-            </p>
-            <button className="btn" type="button" onClick={eraseSavedData}>
-              Yes, erase
-            </button>
-            <button className="btn-ghost" type="button" onClick={() => setConfirmErase(false)}>
-              Cancel
-            </button>
+        <fieldset className="nested-group">
+          <legend>Theme</legend>
+          <div className="theme-tiles">
+          {themes.map((option) => (
+            <label className="theme-tile" key={option.value}>
+              <input
+                type="radio"
+                name="theme"
+                value={option.value}
+                checked={theme === option.value}
+                onChange={(event) => setTheme(event.target.value)}
+              />
+              <span className={`theme-preview theme-${option.value}`} aria-hidden="true">
+                <span>Aa</span><i />
+              </span>
+              <strong>{option.label}</strong>
+            </label>
+          ))}
           </div>
-        )}
+        </fieldset>
+        <fieldset className="nested-group">
+          <legend>Motion</legend>
+          <label className="switch-row">
+            <input
+              type="checkbox"
+              checked={reduceMotion}
+              onChange={(event) => setReduceMotion(event.target.checked)}
+            />
+            Reduce animations
+          </label>
+        </fieldset>
+        <fieldset className="nested-group">
+          <legend>Text size</legend>
+          <div className="font-tiles">
+          {fontSizes.map((option) => (
+            <label className="font-tile" key={option.value}>
+              <input
+                type="radio"
+                name="font-size"
+                value={option.value}
+                checked={fontSize === option.value}
+                onChange={(event) => setFontSize(event.target.value)}
+              />
+              <span aria-hidden="true" className={`font-sample font-${option.value}`}>Aa</span>
+              <strong>{option.label}</strong>
+            </label>
+          ))}
+          </div>
+        </fieldset>
       </fieldset>
       <fieldset className="settings-group panel" id="speech">
         <legend>Speech</legend>
@@ -261,6 +249,31 @@ function Settings() {
         <p>
           This avoids clashes with screen reader keys.
         </p>
+      </fieldset>
+      <fieldset className="settings-group panel" id="saved-data">
+        <legend>Saved data</legend>
+        {!confirmErase ? (
+          <button
+            type="button"
+            ref={eraseButtonRef}
+            onClick={() => setConfirmErase(true)}
+          >
+            Erase all saved data
+          </button>
+        ) : (
+          <div>
+            <p ref={explanationRef} tabIndex={-1}>
+              This removes recent documents, saved progress, bookmarks, quick
+              phrases, and speech history. Your display and voice settings stay.
+            </p>
+            <button className="btn" type="button" onClick={eraseSavedData}>
+              Yes, erase
+            </button>
+            <button className="btn-ghost" type="button" onClick={() => setConfirmErase(false)}>
+              Cancel
+            </button>
+          </div>
+        )}
       </fieldset>
         </div>
       </div>
