@@ -22,3 +22,15 @@
   animation runs and no content is hidden.
 - Check the Urdu reader sample and Urdu wordmark for Nastaliq font, right to
   left alignment, and line height.
+
+## Controls
+
+- Check text inputs, search fields, textareas, file inputs, selects, checkboxes,
+  radios, details, tables, kbd, meter, and progress in light, dark, and high
+  contrast themes.
+- Confirm hover, active, focus-visible, disabled, invalid, and placeholder
+  states are visible and use the correct theme colors.
+- Confirm scrollbars on the page, reader tools, tables, and textareas match the
+  active theme, including the wider high contrast scrollbar.
+- Confirm details summaries are keyboard operable and their content remains
+  visible with reduced motion enabled.

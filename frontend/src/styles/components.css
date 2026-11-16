@@ -20,6 +20,19 @@
 .button-link:hover { transform: translate(-1px, -1px); box-shadow: 6px 6px 0 var(--accent-2); }
 .btn:active,
 .button-link:active { transform: translate(4px, 4px); box-shadow: none; }
+.btn:focus-visible,
+.button-link:focus-visible,
+.btn-ghost:focus-visible { box-shadow: 4px 4px 0 var(--accent-2); }
+.btn:disabled,
+.button-link[aria-disabled="true"],
+.btn-ghost:disabled,
+.btn-ghost[aria-disabled="true"] {
+  border-style: dashed;
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+  box-shadow: none;
+}
 
 .btn-ghost {
   display: inline-flex;
@@ -37,6 +50,7 @@
 }
 
 .btn-ghost:hover { background: var(--highlight-bg); color: var(--highlight-text); }
+.btn-ghost:active { transform: translate(2px, 2px); }
 
 .link {
   color: var(--link);
@@ -117,6 +131,16 @@
 .nav-list a:hover::after,
 .nav-list a.active::after { opacity: 1; }
 .toast { position: fixed; bottom: 1rem; left: 1rem; z-index: 3; max-width: min(24rem, calc(100vw - 2rem)); pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after { transition: none !important; }
+}
+
+:root[data-motion="reduced"] *,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after { transition: none !important; }
 
 @media (max-width: 40rem) {
   .site-header,
