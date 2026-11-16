@@ -32,6 +32,16 @@
 - Check the footer landmarks, Explore and Support link groups, privacy card,
   Back to top button, and stacked mobile layout.
 
+## P4 visual QA
+
+- Check dynamic titles for Home, Upload, Reader, loading, paused, processing,
+  errors, and the not found page.
+- Check the boot splash, lazy route loader, top progress thread, Reader
+  skeleton, upload processing panel, and toast timer.
+- Check Reader, Speak Aloud, and document error empty states, including all
+  actions and keyboard focus.
+- Check expiry labels and reading progress after section changes.
+
 ## Controls
 
 - Check text inputs, search fields, textareas, file inputs, selects, checkboxes,

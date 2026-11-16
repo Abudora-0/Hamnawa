@@ -4,6 +4,7 @@ import { useAnnouncer } from "../context/AnnouncementContext";
 import { getJSON, setJSON } from "../utils/storage";
 import { speech } from "../services/speech";
 import PageHeader from "../components/PageHeader";
+import EmptyState from "../components/EmptyState";
 
 const QUICK_PHRASES_KEY = "hamnawa-quick-phrases";
 const SPEAK_HISTORY_KEY = "hamnawa-speak-history";
@@ -204,7 +205,19 @@ function SpeakAloud() {
           </button>
         </>
       ) : (
-        <p>No speaking history yet.</p>
+        <EmptyState
+          title="No speaking history yet"
+          description="Try a phrase and it will appear here for quick access."
+          action={
+            <button
+              className="btn"
+              type="button"
+              onClick={() => document.getElementById("speak-text")?.focus()}
+            >
+              Write something
+            </button>
+          }
+        />
       )}
     </section>
   );

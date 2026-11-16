@@ -54,3 +54,15 @@ Create a Netlify site with these settings:
 
 The `frontend/public/_redirects` file keeps client-side routes working after
 deployment.
+
+## Design
+
+Hamnawa uses the Plum and Pomegranate palette. The interface uses Bricolage
+Grotesque for headings, Atkinson Hyperlegible for body text, and Noto Nastaliq
+Urdu for Urdu content. Shared palette, typography, spacing, and motion tokens
+live in `frontend/src/styles/tokens.css`.
+
+The design system uses the voice thread as a divider and progress cue, stamp
+buttons with hard offset shadows, petal-shaped panels, and dot-grid texture.
+Motion uses short transform and opacity transitions and turns off when reduced
+motion is enabled.
