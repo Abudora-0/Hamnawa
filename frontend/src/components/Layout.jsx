@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import SkipLink from "./SkipLink";
 import Logo from "./Logo";
 import Footer from "./Footer";
+import TopProgress from "./TopProgress";
 import { useAnnouncer } from "../context/AnnouncementContext";
 import { useSettings } from "../context/SettingsContext";
 
@@ -68,7 +69,13 @@ function Layout({ children }) {
   useEffect(() => {
     const firstPath = `/${location.pathname.split("/")[1]}`;
     const pageName = pageNames[firstPath] || "This page is not here";
-    document.title = `${pageName} | Hamnawa`;
+    const usesPageTitleHook =
+      location.pathname === "/upload" ||
+      location.pathname.startsWith("/reader") ||
+      !pageNames[firstPath];
+    if (!usesPageTitleHook) {
+      document.title = `${pageName} | Hamnawa`;
+    }
 
     if (location.hash) {
       const target = document.getElementById(location.hash.slice(1));
@@ -98,6 +105,7 @@ function Layout({ children }) {
   return (
     <>
       <SkipLink />
+      <TopProgress />
       <span className="header-sentinel" ref={headerSentinelRef} aria-hidden="true" />
       <header className={`site-header${isHeaderCompact ? " is-compact" : ""}`}>
         <Logo />
@@ -111,7 +119,9 @@ function Layout({ children }) {
       </div>
       {toastAnnouncement ? (
         <div className="toast panel" aria-hidden="true">
-          {toastAnnouncement}
+          <span className="toast-icon">i</span>
+          <span>{toastAnnouncement}</span>
+          <span className="toast-timer" />
         </div>
       ) : null}
       <Footer />

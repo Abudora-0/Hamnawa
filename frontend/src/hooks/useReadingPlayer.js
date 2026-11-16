@@ -9,11 +9,13 @@ export function useReadingPlayer(items) {
   const { announce } = useAnnouncer();
   const [index, setIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const [repeatVersion, setRepeatVersion] = useState(0);
 
   useEffect(() => {
     setIndex(0);
     setIsPlaying(false);
+    setHasStarted(false);
   }, [items]);
 
   useEffect(() => {
@@ -49,7 +51,7 @@ export function useReadingPlayer(items) {
         },
         announce,
       );
-      if (items[index + 1]) {
+      if (voiceEngine === "cloud" && items[index + 1]) {
         speech.prefetch(items[index + 1].text);
       }
     }, 50);
@@ -75,6 +77,7 @@ export function useReadingPlayer(items) {
     if (items.length && index >= items.length - 1) {
       setIndex(0);
     }
+    setHasStarted(true);
     setIsPlaying(true);
   }
 
@@ -133,6 +136,7 @@ export function useReadingPlayer(items) {
   return {
     index,
     isPlaying,
+    hasStarted,
     play,
     pause,
     pauseQuietly,

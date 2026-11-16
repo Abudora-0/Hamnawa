@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
+import { useBusy } from "../context/BusyContext";
+import usePageTitle from "../hooks/usePageTitle";
 import { useAnnouncer } from "../context/AnnouncementContext";
 import { useDocument } from "../context/DocumentContext";
 import { sampleDocument } from "../services/mockData";
@@ -42,7 +44,9 @@ function Upload() {
   const [isDragging, setIsDragging] = useState(false);
   const { setDocument } = useDocument();
   const { announce } = useAnnouncer();
+  const { start, stop } = useBusy();
   const navigate = useNavigate();
+  usePageTitle(isUploading ? "Processing..." : "Upload");
 
   useEffect(() => {
     return () => {
@@ -95,6 +99,7 @@ function Upload() {
     setUploadStage("process");
     setElapsedSeconds(0);
     announce("Processing your document, please wait");
+    const busyOperation = start();
     const controller = new AbortController();
     controllerRef.current = controller;
     let timedOut = false;
@@ -133,6 +138,7 @@ function Upload() {
       clearInterval(elapsedTimer);
       clearTimeout(timeout);
       clearInterval(noticeTimer);
+      stop(busyOperation);
       controllerRef.current = null;
       if (isMountedRef.current) {
         setIsUploading(false);
@@ -158,6 +164,11 @@ function Upload() {
       fileInputRef.current.value = "";
       fileInputRef.current.focus();
     }
+  }
+
+  function cancelUpload() {
+    controllerRef.current?.abort();
+    fileInputRef.current?.focus();
   }
 
   const stages = [
@@ -242,7 +253,17 @@ function Upload() {
               ) : "Upload and process"}
             </button>
           </div>
-          {isUploading ? <p>Processing: {elapsedSeconds} seconds</p> : null}
+          {isUploading ? (
+            <div className="processing-panel panel" role="status">
+              <div className="processing-wave" aria-hidden="true"><i /><i /><i /><i /><i /></div>
+              <strong>Reading your document.</strong>
+              <p>Large files can take up to a minute.</p>
+              <p>Elapsed: {elapsedSeconds} seconds</p>
+              <button className="btn-ghost" type="button" onClick={cancelUpload}>
+                Cancel
+              </button>
+            </div>
+          ) : null}
           {error && <p className="error-message" role="alert">{error}</p>}
         </form>
         <aside className="panel upload-tips">

@@ -21,12 +21,18 @@ import {
   saveProgress,
 } from "../utils/documentMemory";
 import { buildQueue } from "../utils/readingQueue";
+import EmptyState from "../components/EmptyState";
+import ReaderTitleBar from "../components/ReaderTitleBar";
+import Skeleton from "../components/Skeleton";
+import { useBusy } from "../context/BusyContext";
+import usePageTitle from "../hooks/usePageTitle";
 
 function Reader() {
   const { id } = useParams();
   const { document: contextDocument, setDocument } = useDocument();
   const { cuesEnabled, speechRate, screenReaderMode } = useSettings();
   const { announce } = useAnnouncer();
+  const { start, stop } = useBusy();
   const [loadingId, setLoadingId] = useState("");
   const [error, setError] = useState("");
   const [bookmarks, setBookmarks] = useState([]);
@@ -50,6 +56,7 @@ function Reader() {
     requestedId.current = id;
     setLoadingId(id);
     setError("");
+    const busyOperation = start();
     getDocument(id)
       .then((loadedDocument) => {
         setDocument(loadedDocument);
@@ -58,8 +65,9 @@ function Reader() {
       .catch((loadError) => {
         setError(loadError.message);
         setLoadingId("");
-      });
-  }, [contextDocument, id, setDocument]);
+      })
+      .finally(() => stop(busyOperation));
+  }, [contextDocument, id, setDocument, start, stop]);
 
   const items = useMemo(
     () => (currentDocument ? buildQueue(currentDocument, cuesEnabled) : []),
@@ -67,6 +75,14 @@ function Reader() {
   );
   const player = useReadingPlayer(items);
   const readerActions = useReaderActions(player, items, currentDocument);
+  const pageTitle = error
+    ? "Could not open document"
+    : loadingId === id
+      ? "Loading"
+      : currentDocument && player.hasStarted
+        ? `${player.isPlaying ? "Reading" : "Paused"}: ${currentDocument.title}`
+        : currentDocument?.title || "Reader";
+  usePageTitle(pageTitle);
 
   useEffect(() => {
     if (!currentDocument || restoredDocumentId.current === currentDocument.id) {
@@ -136,6 +152,11 @@ function Reader() {
     );
   }
 
+  function retryLoad() {
+    requestedId.current = "";
+    setError("");
+  }
+
   const voiceActions = {
     ...readerActions,
     addBookmark: addCurrentBookmark,
@@ -169,38 +190,41 @@ function Reader() {
   if (error) {
     return (
       <section>
-        <h1>Reader</h1>
-        <p className="error-message" role="alert">{error}</p>
-        <Link className="btn" to="/upload">Upload again</Link>
+        <EmptyState
+          title="We could not open this document"
+          description={error}
+          action={<button className="btn" type="button" onClick={retryLoad}>Try again</button>}
+          secondaryAction={<Link className="btn-ghost" to="/upload">Upload</Link>}
+        />
       </section>
     );
   }
 
   if (loadingId === id) {
-    return (
-      <div className="panel reader-state" role="status">
-        <span className="thread thread-loading" aria-hidden="true" />
-        <span>Loading document</span>
-      </div>
-    );
+    return <div className="reader-loading" role="status"><span className="live-region">Loading document</span><Skeleton /></div>;
   }
 
   if (!currentDocument) {
     return (
       <section>
-        <h1>Reader</h1>
-        <div className="panel reader-state">
-          <p>No document loaded yet.</p>
-          <Link className="btn" to="/upload">Upload a document</Link>
-        </div>
+        <EmptyState
+          title="Your reader is waiting"
+          description="Upload a document to start reading and listening."
+          action={<Link className="btn" to="/upload">Upload a document</Link>}
+        />
       </section>
     );
   }
 
   const isSpeechSupported = speech.isSupported();
+  const sectionIds = [...new Set(items.map((item) => item.sectionId))];
+  const currentSectionIndex = sectionIds.indexOf(items[player.index]?.sectionId);
+  const progress = sectionIds.length
+    ? Math.round(((currentSectionIndex + 1) / sectionIds.length) * 100)
+    : 0;
   return (
     <section className="reader-page">
-      <h1>{currentDocument.title}</h1>
+      <ReaderTitleBar document={currentDocument} progress={progress} />
       {voiceCommands.supported ? (
         <>
           <button
