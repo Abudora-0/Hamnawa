@@ -21,7 +21,6 @@ function Layout({ children }) {
   const navigate = useNavigate();
   const mainRef = useRef(null);
   const headerSentinelRef = useRef(null);
-  const hasRendered = useRef(false);
   const { announcement } = useAnnouncer();
   const { screenReaderMode } = useSettings();
   const [toastAnnouncement, setToastAnnouncement] = useState("");
@@ -71,13 +70,21 @@ function Layout({ children }) {
     const pageName = pageNames[firstPath] || "This page is not here";
     document.title = `${pageName} | Hamnawa`;
 
-    if (!hasRendered.current) {
-      hasRendered.current = true;
+    if (location.hash) {
+      const target = document.getElementById(location.hash.slice(1));
+      if (target) {
+        if (!target.matches("a, button, input, select, textarea, summary, [tabindex]")) {
+          target.tabIndex = -1;
+        }
+        target.scrollIntoView({ behavior: "auto", block: "start" });
+        target.focus();
+      }
       return;
     }
 
+    window.scrollTo({ top: 0, behavior: "auto" });
     mainRef.current?.focus();
-  }, [location.pathname]);
+  }, [location.pathname, location.hash]);
 
   useEffect(() => {
     if (typeof announcement !== "string" || !announcement) {
