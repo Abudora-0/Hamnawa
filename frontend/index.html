@@ -22,7 +22,58 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <style>
+        #boot-splash {
+          display: grid;
+          min-height: 100vh;
+          place-content: center;
+          gap: 0.75rem;
+          background: var(--boot-background, #f5eff5);
+          color: var(--boot-text, #2a0f2e);
+          font-family: Arial, sans-serif;
+          text-align: center;
+        }
+        #boot-splash-mark {
+          width: 3rem;
+          height: 3rem;
+          margin: 0 auto;
+          border-radius: 0.75rem;
+          background: #8e1b4f;
+        }
+        #boot-splash-wave {
+          width: 2rem;
+          height: 0.35rem;
+          margin: 0 auto;
+          border-radius: 999px;
+          background: #2f7a6b;
+          animation: boot-wave 900ms ease-in-out infinite alternate;
+        }
+        @keyframes boot-wave {
+          from { opacity: 0.4; transform: scaleX(0.65); }
+          to { opacity: 1; transform: scaleX(1); }
+        }
+        html[data-theme="dark"] #boot-splash {
+          --boot-background: #160a1b;
+          --boot-text: #f8ecf6;
+        }
+        html[data-theme="contrast"] #boot-splash {
+          --boot-background: #000;
+          --boot-text: #fff;
+        }
+        html[data-motion="reduced"] #boot-splash-wave {
+          animation: none;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          #boot-splash-wave { animation: none; }
+        }
+      </style>
+      <div id="boot-splash" role="status" aria-label="Loading Hamnawa">
+        <div id="boot-splash-mark" aria-hidden="true"></div>
+        <strong>Hamnawa</strong>
+        <span id="boot-splash-wave" aria-hidden="true"></span>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

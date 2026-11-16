@@ -9,6 +9,7 @@ import App from "./App";
 import { SettingsProvider } from "./context/SettingsContext";
 import { AnnouncementProvider } from "./context/AnnouncementContext";
 import { DocumentProvider } from "./context/DocumentContext";
+import { BusyProvider } from "./context/BusyContext";
 import "./styles/tokens.css";
 import "./styles/base.css";
 import "./styles/components.css";
@@ -19,9 +20,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <SettingsProvider>
         <AnnouncementProvider>
-          <DocumentProvider>
-            <App />
-          </DocumentProvider>
+          <BusyProvider>
+            <DocumentProvider>
+              <App />
+            </DocumentProvider>
+          </BusyProvider>
         </AnnouncementProvider>
       </SettingsProvider>
     </BrowserRouter>
