@@ -7,7 +7,7 @@ html {
 
 html::-webkit-scrollbar,
 .reader-tools::-webkit-scrollbar,
-table::-webkit-scrollbar,
+.table-wrap::-webkit-scrollbar,
 textarea::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -15,7 +15,7 @@ textarea::-webkit-scrollbar {
 
 html::-webkit-scrollbar-track,
 .reader-tools::-webkit-scrollbar-track,
-table::-webkit-scrollbar-track,
+.table-wrap::-webkit-scrollbar-track,
 textarea::-webkit-scrollbar-track {
   border: 1px solid var(--border);
   background: var(--background);
@@ -23,7 +23,7 @@ textarea::-webkit-scrollbar-track {
 
 html::-webkit-scrollbar-thumb,
 .reader-tools::-webkit-scrollbar-thumb,
-table::-webkit-scrollbar-thumb,
+.table-wrap::-webkit-scrollbar-thumb,
 textarea::-webkit-scrollbar-thumb {
   border: 3px solid var(--background);
   border-radius: 999px;
@@ -32,7 +32,7 @@ textarea::-webkit-scrollbar-thumb {
 
 html::-webkit-scrollbar-thumb:hover,
 .reader-tools::-webkit-scrollbar-thumb:hover,
-table::-webkit-scrollbar-thumb:hover,
+.table-wrap::-webkit-scrollbar-thumb:hover,
 textarea::-webkit-scrollbar-thumb:hover { background: var(--accent-2); }
 
 :root[data-theme="contrast"] {
@@ -41,12 +41,12 @@ textarea::-webkit-scrollbar-thumb:hover { background: var(--accent-2); }
 
 :root[data-theme="contrast"]::-webkit-scrollbar,
 :root[data-theme="contrast"] .reader-tools::-webkit-scrollbar,
-:root[data-theme="contrast"] table::-webkit-scrollbar,
+:root[data-theme="contrast"] .table-wrap::-webkit-scrollbar,
 :root[data-theme="contrast"] textarea::-webkit-scrollbar { width: 14px; height: 14px; }
 
 :root[data-theme="contrast"]::-webkit-scrollbar-thumb,
 :root[data-theme="contrast"] .reader-tools::-webkit-scrollbar-thumb,
-:root[data-theme="contrast"] table::-webkit-scrollbar-thumb,
+:root[data-theme="contrast"] .table-wrap::-webkit-scrollbar-thumb,
 :root[data-theme="contrast"] textarea::-webkit-scrollbar-thumb { background: var(--text); }
 
 ::selection {
@@ -256,14 +256,22 @@ button:not([class]) {
 button:not([class]):hover { background: var(--highlight-bg); color: var(--highlight-text); }
 
 table {
-  display: block;
-  max-width: 100%;
-  overflow: auto;
   border-collapse: separate;
   border-spacing: 0;
   margin: 1rem 0;
+  width: 100%;
+}
+
+.table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
   border: 2px solid var(--border);
   border-radius: var(--radius-petal);
+}
+
+.table-wrap table {
+  min-width: 30rem;
+  margin: 0;
 }
 th,
 td { border-right: 2px solid var(--border); border-bottom: 2px solid var(--border); padding: 0.5rem 0.75rem; text-align: left; }
@@ -317,10 +325,6 @@ kbd {
   box-shadow: 0 2px 0 var(--border);
 }
 
-details {
-  overflow: hidden;
-}
-
 summary {
   min-height: 2.75rem;
   padding: 0.5rem 0;
@@ -333,7 +337,7 @@ summary::before {
   display: inline-block;
   width: 1.25rem;
   margin-right: 0.35rem;
-  content: "+";
+  content: "+" / "";
   font-family: var(--font-heading);
   font-size: var(--text-2);
   line-height: 1;

@@ -29,11 +29,11 @@ function Footer() {
           <Link to="/help#keyboard-shortcuts">Keyboard shortcuts</Link>
           <Link to="/settings">Settings</Link>
         </nav>
-        <aside className="privacy-card panel">
+        <div className="privacy-card panel">
           <h2>Private by default</h2>
           <p>No accounts. Documents are deleted after 24 hours.</p>
           <Link className="link" to="/settings">Erase saved data in Settings</Link>
-        </aside>
+        </div>
       </div>
       <div className="footer-bottom">
         <p>Hamnawa, a university software engineering project</p>
